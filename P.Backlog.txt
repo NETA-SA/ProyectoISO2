@@ -1,6 +1,6 @@
 ## Casos de Uso || Prioridad ##
 
-Realizar Autenticación || 0
+Realizar Autenticacion || 0
 Registar Cliente/Repartidor || 0
 Registar Restaurante || 0
 Realizar Pedido || 1
