@@ -1,49 +1,16 @@
-package es.uclm.library.business.persistence;
+package es.uclm.library.persistence;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
 import es.uclm.library.business.entity.Cliente;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public class ClienteDAO extends EntityDAO<Cliente> {
+import java.util.List;
 
-    public ClienteDAO(GestorBaseDatos gestorBaseDatos) {
-        super(gestorBaseDatos);
-    }
+@Repository
+public interface ClienteDAO extends JpaRepository<Cliente, String> {
+
+    // Ejemplo de un método personalizado para buscar clientes por nombre
+    List<Cliente> findByNombre(String nombre);
 
 
-
-    @Override
-    protected String generateInsertSQL(Cliente cliente) {
-        return "INSERT INTO clientes (id_cliente, nombre, apellidos, dni) VALUES ('" +
-                cliente.getIdUsuario() + "', '" + cliente.getNombre() + "', '" + cliente.getApellidos() + "', '" +
-                cliente.getDni() + "')";
-    }
-
-    @Override
-    protected String generateUpdateSQL(Cliente cliente) {
-        return "UPDATE clientes SET nombre = '" + cliente.getNombre() + "', apellidos = '" + cliente.getApellidos() +
-                "', dni = '" + cliente.getDni() + "' WHERE id_cliente = '" + cliente.getIdUsuario() + "'";
-    }
-
-    @Override
-    protected String generateDeleteSQL(String id) {
-        return "DELETE FROM clientes WHERE id_cliente = '" + id + "'";
-    }
-
-    @Override
-    protected String generateSelectSQL(String id) {
-        return "SELECT * FROM clientes WHERE id_cliente = '" + id + "'";
-    }
-
-    @Override
-    protected Cliente mapResultSetToEntity(ResultSet resultSet) throws SQLException {
-        Cliente cliente = new Cliente();
-        cliente.setIdUsuario(resultSet.getString("id_cliente"));
-        cliente.setNombre(resultSet.getString("nombre"));
-        cliente.setApellidos(resultSet.getString("apellidos"));
-        cliente.setDni(resultSet.getString("dni"));
-        // Asigna otros atributos específicos de Cliente según sea necesario
-        return cliente;
-    }
 }
