@@ -1,6 +1,6 @@
 package es.uclm.library.business.entity;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "item_menu")
