@@ -1,4 +1,4 @@
-package es.uclm.library.business.persistence;
+package es.uclm.library.persistence;
 
 import es.uclm.library.business.entity.Restaurante;
 import org.springframework.data.jpa.repository.JpaRepository;
