@@ -4,11 +4,13 @@ import es.uclm.library.persistence.PedidoDAO;
 import es.uclm.library.persistence.ServicioEntregaDAO;
 import es.uclm.library.business.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
+@Controller
 @RequestMapping("/pedidos")
 public class GestorPedidos {
 
@@ -21,71 +23,83 @@ public class GestorPedidos {
 	private Pedido pedidoEnMarcha;
 
 	/**
+	 * Muestra el formulario para realizar un nuevo pedido.
+	 *
+	 * @param model Model para pasar datos a la vista
+	 * @return Nombre de la plantilla Thymeleaf para realizar un pedido
+	 */
+	@GetMapping("/realizar")
+	public String mostrarFormularioPedido(Model model) {
+		// Agrega datos necesarios al modelo, si es necesario
+		// model.addAttribute("cliente", new Cliente());
+		return "realizarPedido"; // Nombre de la plantilla Thymeleaf (html)
+	}
+
+	/**
 	 * Realiza un nuevo pedido.
 	 *
 	 * @param cliente   Cliente que realiza el pedido
 	 * @param restaurante Restaurante al que se pide
 	 * @param items     Lista de ítems del menú
+	 * @param model Model para pasar datos a la vista
+	 * @return Redirección o vista de confirmación
 	 */
 	@PostMapping("/realizar")
-	public void realizarPedido(@RequestBody Cliente cliente, @RequestBody Restaurante restaurante, @RequestBody List<ItemMenu> items) {
+	public String realizarPedido(@RequestParam Cliente cliente, @RequestParam Restaurante restaurante, @RequestParam List<ItemMenu> items, Model model) {
 		// TODO - implementar lógica de realización de pedido
-		throw new UnsupportedOperationException();
+		model.addAttribute("mensaje", "Pedido realizado con éxito.");
+		return "confirmacionPedido"; // Nombre de la plantilla Thymeleaf (html)
 	}
 
 	/**
-	 * Realiza el pago de un pedido.
+	 * Muestra un formulario para añadir un ítem al pedido en marcha.
 	 *
-	 * @param pedido Pedido a pagar
-	 * @return Verdadero si el pago se realizó con éxito
+	 * @return Nombre de la plantilla Thymeleaf para añadir ítem
 	 */
-	private boolean realizarPago(Pedido pedido) {
-		// TODO - implementar lógica de pago
-		throw new UnsupportedOperationException();
-	}
-
-	/**
-	 * Crea un servicio de entrega para un pedido.
-	 *
-	 * @param pedido   Pedido a entregar
-	 * @param direccion Dirección de entrega
-	 * @return Servicio de entrega creado
-	 */
-	private ServicioEntrega crearServicioEntrega(Pedido pedido, Direccion direccion) {
-		// TODO - implementar creación de servicio de entrega
-		throw new UnsupportedOperationException();
+	@GetMapping("/anadirItem")
+	public String mostrarFormularioAnadirItem() {
+		return "anadirItem"; // Nombre de la plantilla Thymeleaf (html)
 	}
 
 	/**
 	 * Añade un ítem al pedido en marcha.
 	 *
 	 * @param item Ítem del menú a añadir
+	 * @param model Model para pasar datos a la vista
+	 * @return Redirección a la vista del pedido actual
 	 */
 	@PostMapping("/anadirItem")
-	public void anadirItemMenu(@RequestBody ItemMenu item) {
-		// TODO - implementar lógica para añadir ítem
-		throw new UnsupportedOperationException();
+	public String anadirItemMenu(@RequestParam ItemMenu item, Model model) {
+		// TODO - implementar lógica para añadir ítem al pedido en marcha
+		model.addAttribute("mensaje", "Ítem añadido al pedido.");
+		return "verPedido"; // Vista que muestra el pedido actual
 	}
 
 	/**
 	 * Elimina un ítem del pedido en marcha.
 	 *
 	 * @param item Ítem del menú a eliminar
+	 * @param model Model para pasar datos a la vista
+	 * @return Redirección a la vista del pedido actual
 	 */
-	@DeleteMapping("/eliminarItem")
-	public void eliminarItemMenu(@RequestBody ItemMenu item) {
-		// TODO - implementar lógica para eliminar ítem
-		throw new UnsupportedOperationException();
+	@PostMapping("/eliminarItem")
+	public String eliminarItemMenu(@RequestParam ItemMenu item, Model model) {
+		// TODO - implementar lógica para eliminar ítem del pedido en marcha
+		model.addAttribute("mensaje", "Ítem eliminado del pedido.");
+		return "verPedido"; // Vista que muestra el pedido actual
 	}
 
 	/**
 	 * Comienza un nuevo pedido para un restaurante.
 	 *
 	 * @param restaurante Restaurante en el que se inicia el pedido
+	 * @param model Model para pasar datos a la vista
+	 * @return Vista para crear el pedido en el restaurante seleccionado
 	 */
 	@PostMapping("/comenzar")
-	public void comenzarPedido(@RequestBody Restaurante restaurante) {
-		// TODO - implementar lógica para comenzar pedido
-		throw new UnsupportedOperationException();
+	public String comenzarPedido(@RequestParam Restaurante restaurante, Model model) {
+		// TODO - implementar lógica para comenzar el pedido
+		model.addAttribute("restaurante", restaurante);
+		return "crearPedido"; // Vista para comenzar un nuevo pedido
 	}
 }

@@ -6,11 +6,13 @@ import es.uclm.library.business.entity.Direccion;
 import es.uclm.library.business.entity.Restaurante;
 import es.uclm.library.business.entity.CodigoPostal;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
+@Controller
 @RequestMapping("/clientes")
 public class GestorClientes {
 
@@ -18,67 +20,61 @@ public class GestorClientes {
 	private RestauranteDAO restauranteDAO;
 
 	/**
-	 * Busca restaurantes en una zona específica.
+	 * Muestra una vista de restaurantes en una zona específica.
 	 *
 	 * @param zona Código postal de la zona
-	 * @return Lista de restaurantes en la zona
+	 * @param model Model para pasar datos a la vista
+	 * @return Nombre de la plantilla Thymeleaf para la lista de restaurantes
 	 */
 	@GetMapping("/restaurantes/zona")
-	public List<Restaurante> buscarRestaurante(@RequestParam CodigoPostal zona) {
+	public String buscarRestaurante(@RequestParam CodigoPostal zona, Model model) {
 		// TODO - implementar la lógica de búsqueda por zona
-		throw new UnsupportedOperationException();
+		List<Restaurante> restaurantes = // lógica para obtener restaurantes;
+				model.addAttribute("restaurantes", restaurantes);
+		return "restaurantes"; // Nombre de la plantilla Thymeleaf (html)
 	}
 
 	/**
-	 * Busca restaurantes por cadena de búsqueda.
+	 * Muestra una vista de restaurantes que coinciden con la búsqueda.
 	 *
 	 * @param cadenaBusqueda Palabra clave para buscar restaurantes
-	 * @return Lista de restaurantes que coinciden con la búsqueda
+	 * @param model Model para pasar datos a la vista
+	 * @return Nombre de la plantilla Thymeleaf para la lista de restaurantes
 	 */
 	@GetMapping("/restaurantes/busqueda")
-	public List<Restaurante> buscarRestaurante(@RequestParam String cadenaBusqueda) {
+	public String buscarRestaurante(@RequestParam String cadenaBusqueda, Model model) {
 		// TODO - implementar la lógica de búsqueda por cadena
-		throw new UnsupportedOperationException();
+		List<Restaurante> restaurantes = // lógica para obtener restaurantes;
+				model.addAttribute("restaurantes", restaurantes);
+		return "restaurantes";
 	}
 
 	/**
-	 * Marca un restaurante como favorito para un cliente.
+	 * Muestra una vista para registrar un cliente.
 	 *
-	 * @param cliente Cliente que marca el favorito
-	 * @param restaurante Restaurante a marcar como favorito
+	 * @return Nombre de la plantilla Thymeleaf para el formulario de registro
 	 */
-	@PostMapping("/favorito")
-	public void favorito(@RequestBody Cliente cliente, @RequestBody Restaurante restaurante) {
-		// TODO - implementar lógica para marcar favorito
-		throw new UnsupportedOperationException();
+	@GetMapping("/registrar")
+	public String mostrarFormularioRegistro() {
+		return "registroCliente"; //Nombre de la plantilla Thymeleaf (html)
 	}
 
 	/**
-	 * Registra un nuevo cliente en el sistema.
+	 * Procesa el registro de un nuevo cliente.
 	 *
 	 * @param nombre Nombre del cliente
 	 * @param apellido Apellido del cliente
 	 * @param direccion Dirección del cliente
-	 * @return Cliente registrado
+	 * @param model Model para pasar datos a la vista
+	 * @return Redirección o confirmación de registro
 	 */
 	@PostMapping("/registrar")
-	public Cliente registrarCliente(@RequestParam String nombre, @RequestParam String apellido, @RequestBody Direccion direccion) {
+	public String registrarCliente(@RequestParam String nombre, @RequestParam String apellido, @RequestBody Direccion direccion, Model model) {
 		// TODO - implementar lógica de registro de cliente
-		throw new UnsupportedOperationException();
+		Cliente cliente = // lógica para registrar cliente;
+				model.addAttribute("cliente", cliente);
+		return "confirmacionRegistro"; // Nombre de la plantilla Thymeleaf (html)
 	}
 
-	/**
-	 * Da de alta una nueva dirección.
-	 *
-	 * @param calle Calle de la dirección
-	 * @param numero Número de la dirección
-	 * @param complemento Complemento de la dirección
-	 * @param cp Código postal
-	 * @param municipio Municipio de la dirección
-	 * @return Nueva dirección creada
-	 */
-	private Direccion altaDireccion(String calle, String numero, String complemento, CodigoPostal cp, String municipio) {
-		// TODO - implementar lógica para alta de dirección
-		throw new UnsupportedOperationException();
-	}
+
 }

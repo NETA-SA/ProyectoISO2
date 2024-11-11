@@ -1,26 +1,52 @@
 package es.uclm.library.business.controller;
 
 import es.uclm.library.business.entity.*;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
+@Controller
 @RequestMapping("/restaurantes")
 public class GestorRestaurantes {
 
 	/**
+	 * Muestra el formulario para registrar un nuevo restaurante.
+	 *
+	 * @return Nombre de la plantilla Thymeleaf para el formulario de registro
+	 */
+	@GetMapping("/registrar")
+	public String mostrarFormularioRegistroRestaurante() {
+		return "registroRestaurante"; // Nombre de la plantilla Thymeleaf (html)
+	}
+
+	/**
 	 * Registra un nuevo restaurante.
 	 *
-	 * @param nombre Nombre del restaurante
-	 * @param cif    CIF del restaurante
+	 * @param nombre    Nombre del restaurante
+	 * @param cif       CIF del restaurante
 	 * @param direccion Dirección del restaurante
-	 * @return Restaurante registrado
+	 * @param model     Model para pasar datos a la vista
+	 * @return Redirección o vista de confirmación
 	 */
 	@PostMapping("/registrar")
-	public Restaurante registrarRestaurante(@RequestParam String nombre, @RequestParam String cif, @RequestBody Direccion direccion) {
+	public String registrarRestaurante(@RequestParam String nombre, @RequestParam String cif, @RequestBody Direccion direccion, Model model) {
 		// TODO - implementar lógica para registrar un restaurante
-		throw new UnsupportedOperationException();
+		model.addAttribute("mensaje", "Restaurante registrado con éxito.");
+		return "confirmacionRegistroRestaurante"; // Nombre de la plantilla Thymeleaf (html)
+	}
+
+	/**
+	 * Muestra el formulario para editar la carta de un restaurante.
+	 *
+	 * @param model Model para pasar datos a la vista
+	 * @return Nombre de la plantilla Thymeleaf para editar la carta
+	 */
+	@GetMapping("/editarCarta")
+	public String mostrarFormularioEditarCarta(Model model) {
+		// Agregar datos al modelo, si es necesario
+		return "editarCarta"; // Nombre de la plantilla Thymeleaf (html)
 	}
 
 	/**
@@ -28,15 +54,18 @@ public class GestorRestaurantes {
 	 *
 	 * @param nombre Nombre del restaurante
 	 * @param items  Lista de ítems del menú
+	 * @param model Model para pasar datos a la vista
+	 * @return Vista de confirmación de edición de la carta
 	 */
-	@PutMapping("/editarCarta")
-	public void editarCarta(@RequestParam String nombre, @RequestBody List<ItemMenu> items) {
+	@PostMapping("/editarCarta")
+	public String editarCarta(@RequestParam String nombre, @RequestParam List<ItemMenu> items, Model model) {
 		// TODO - implementar lógica para editar la carta
-		throw new UnsupportedOperationException();
+		model.addAttribute("mensaje", "Carta actualizada con éxito.");
+		return "confirmacionEdicionCarta"; // Nombre de la plantilla Thymeleaf (html)
 	}
 
 	/**
-	 * Crea un ítem de menú.
+	 * Crea un ítem de menú (sin interfaz expuesta, solo como método interno).
 	 *
 	 * @param nombre Nombre del ítem
 	 * @param precio Precio del ítem
