@@ -1,8 +1,12 @@
 package es.uclm.library.business.controller;
 
-import es.uclm.library.persistence.PedidoDAO;
-import es.uclm.library.persistence.ServicioEntregaDAO;
-import es.uclm.library.business.entity.*;
+import es.uclm.library.business.entity.Cliente;
+import es.uclm.library.business.entity.ItemMenu;
+import es.uclm.library.business.entity.Pedido;
+import es.uclm.library.business.entity.Restaurante;
+import es.uclm.library.business.service.PedidoService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,13 +18,10 @@ import java.util.List;
 @RequestMapping("/pedidos")
 public class GestorPedidos {
 
-	@Autowired
-	private PedidoDAO pedidoDAO;
+	private static final Logger logger = LoggerFactory.getLogger(GestorPedidos.class);
 
 	@Autowired
-	private ServicioEntregaDAO servicioEntregaDAO;
-
-	private Pedido pedidoEnMarcha;
+	private PedidoService pedidoService;
 
 	/**
 	 * Muestra el formulario para realizar un nuevo pedido.
@@ -30,8 +31,7 @@ public class GestorPedidos {
 	 */
 	@GetMapping("/realizar")
 	public String mostrarFormularioPedido(Model model) {
-		// Agrega datos necesarios al modelo, si es necesario
-		// model.addAttribute("cliente", new Cliente());
+		logger.info("Mostrando el formulario para realizar un nuevo pedido.");
 		return "realizarPedido"; // Nombre de la plantilla Thymeleaf (html)
 	}
 
@@ -46,8 +46,10 @@ public class GestorPedidos {
 	 */
 	@PostMapping("/realizar")
 	public String realizarPedido(@RequestParam Cliente cliente, @RequestParam Restaurante restaurante, @RequestParam List<ItemMenu> items, Model model) {
-		// TODO - implementar lógica de realización de pedido
+		logger.info("Iniciando la creación de un nuevo pedido para el cliente {} en el restaurante {}", cliente, restaurante);
+		Pedido pedido = pedidoService.realizarPedido(cliente, restaurante, items);
 		model.addAttribute("mensaje", "Pedido realizado con éxito.");
+		logger.info("Pedido realizado con éxito: {}", pedido);
 		return "confirmacionPedido"; // Nombre de la plantilla Thymeleaf (html)
 	}
 
@@ -58,6 +60,7 @@ public class GestorPedidos {
 	 */
 	@GetMapping("/anadirItem")
 	public String mostrarFormularioAnadirItem() {
+		logger.info("Mostrando formulario para añadir un ítem al pedido.");
 		return "anadirItem"; // Nombre de la plantilla Thymeleaf (html)
 	}
 
@@ -70,8 +73,10 @@ public class GestorPedidos {
 	 */
 	@PostMapping("/anadirItem")
 	public String anadirItemMenu(@RequestParam ItemMenu item, Model model) {
-		// TODO - implementar lógica para añadir ítem al pedido en marcha
+		logger.info("Añadiendo ítem {} al pedido en marcha.", item);
+		pedidoService.anadirItemMenu(pedidoEnMarcha, item);
 		model.addAttribute("mensaje", "Ítem añadido al pedido.");
+		logger.info("Ítem {} añadido al pedido en marcha.", item);
 		return "verPedido"; // Vista que muestra el pedido actual
 	}
 
@@ -84,8 +89,10 @@ public class GestorPedidos {
 	 */
 	@PostMapping("/eliminarItem")
 	public String eliminarItemMenu(@RequestParam ItemMenu item, Model model) {
-		// TODO - implementar lógica para eliminar ítem del pedido en marcha
+		logger.info("Eliminando ítem {} del pedido en marcha.", item);
+		pedidoService.eliminarItemMenu(pedidoEnMarcha, item);
 		model.addAttribute("mensaje", "Ítem eliminado del pedido.");
+		logger.info("Ítem {} eliminado del pedido en marcha.", item);
 		return "verPedido"; // Vista que muestra el pedido actual
 	}
 
@@ -98,8 +105,10 @@ public class GestorPedidos {
 	 */
 	@PostMapping("/comenzar")
 	public String comenzarPedido(@RequestParam Restaurante restaurante, Model model) {
-		// TODO - implementar lógica para comenzar el pedido
+		logger.info("Comenzando un nuevo pedido para el restaurante {}", restaurante);
+		pedidoEnMarcha = pedidoService.comenzarPedido(restaurante);
 		model.addAttribute("restaurante", restaurante);
+		logger.info("Formulario de creación de pedido mostrado para el restaurante {}", restaurante);
 		return "crearPedido"; // Vista para comenzar un nuevo pedido
 	}
 }
