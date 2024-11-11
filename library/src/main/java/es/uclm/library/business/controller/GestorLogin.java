@@ -40,7 +40,7 @@ public class GestorLogin {
 	public String login(@RequestParam String id, @RequestParam String pass, Model model) {
 		logger.info("Intentando iniciar sesión con ID: {}", id);
 
-		boolean autenticado = loginService.autenticar(id, pass); // Llama a LoginService para manejar la autenticación
+		boolean autenticado = loginService.autenticarUsuario(id, pass); // Llama a LoginService para manejar la autenticación
 
 		if (autenticado) {
 			logger.info("Inicio de sesión exitoso para el usuario: {}", id);

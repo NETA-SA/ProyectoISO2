@@ -5,6 +5,7 @@ import es.uclm.library.business.entity.Direccion;
 import es.uclm.library.business.entity.Restaurante;
 import es.uclm.library.business.entity.CodigoPostal;
 import es.uclm.library.business.service.ClienteService;
+import es.uclm.library.business.service.RestauranteService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,9 @@ public class GestorClientes {
 
 	@Autowired
 	private ClienteService clienteService;
+	@Autowired
+	private RestauranteService restauranteService;
+
 
 	/**
 	 * Muestra el formulario para buscar restaurantes en una zona específica.
@@ -44,7 +48,7 @@ public class GestorClientes {
 	@PostMapping("/restaurantes/zona")
 	public String buscarRestaurante(@RequestParam CodigoPostal zona, Model model) {
 		logger.info("Buscando restaurantes en la zona: {}", zona);
-		List<Restaurante> restaurantes = clienteService.buscarRestaurantePorZona(zona);
+		List<Restaurante> restaurantes = clienteService.buscarRestaurantesPorZona(zona);
 		model.addAttribute("restaurantes", restaurantes);
 		logger.info("Encontrados {} restaurantes en la zona {}", restaurantes.size(), zona);
 		return "listaRestaurantes"; // Vista Thymeleaf para mostrar resultados
@@ -71,7 +75,7 @@ public class GestorClientes {
 	 * @return Redirección o vista de confirmación
 	 */
 	@PostMapping("/registrar")
-	public String registrarCliente(@RequestParam String nombre, @RequestParam String apellido, @RequestBody Direccion direccion, Model model) {
+	public String registrarCliente(@RequestParam String nombre, @RequestParam String apellido, @RequestParam Direccion direccion, Model model) {
 		logger.info("Registrando nuevo cliente: {} {}", nombre, apellido);
 		Cliente cliente = clienteService.registrarCliente(nombre, apellido, direccion);
 		model.addAttribute("cliente", cliente);
@@ -88,11 +92,12 @@ public class GestorClientes {
 	 * @return Vista de confirmación
 	 */
 	@PostMapping("/favorito")
-	public String favorito(@RequestParam Cliente cliente, @RequestParam Restaurante restaurante, Model model) {
-		logger.info("Marcando el restaurante {} como favorito para el cliente {}", restaurante, cliente);
-		clienteService.marcarFavorito(cliente, restaurante);
+	public String favorito(@RequestParam Long clienteId, @RequestParam Long restauranteId, Model model) {
+		Cliente cliente = clienteService.findById(clienteId); // Este método debe implementarse en ClienteService
+		Restaurante restaurante = restauranteService.findById(restauranteId); // Similar para RestauranteService
+		clienteService.agregarRestauranteFavorito(cliente, restaurante);
 		model.addAttribute("mensaje", "Restaurante añadido a favoritos.");
-		logger.info("Restaurante {} añadido a favoritos del cliente {}", restaurante, cliente);
-		return "confirmacionFavorito"; // Vista Thymeleaf para confirmar la acción
+		return "confirmacionFavorito"; // vista thymeleaf
 	}
+
 }

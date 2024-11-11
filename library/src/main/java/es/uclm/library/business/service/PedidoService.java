@@ -6,7 +6,10 @@ import es.uclm.library.business.entity.ItemMenu;
 import es.uclm.library.business.entity.Pedido;
 import es.uclm.library.business.entity.Restaurante;
 import es.uclm.library.business.entity.ServicioEntrega;
+import es.uclm.library.persistence.ClienteDAO;
+import es.uclm.library.persistence.ItemMenuDAO;
 import es.uclm.library.persistence.PedidoDAO;
+import es.uclm.library.persistence.RestauranteDAO;
 import es.uclm.library.persistence.ServicioEntregaDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +28,15 @@ public class PedidoService {
 
     @Autowired
     private ServicioEntregaDAO servicioEntregaDAO;
+
+    @Autowired
+    private ClienteDAO clienteDAO;
+
+    @Autowired
+    private RestauranteDAO restauranteDAO;
+
+    @Autowired
+    private ItemMenuDAO itemMenuDAO;
 
     /**
      * Realiza un nuevo pedido.
@@ -77,5 +89,55 @@ public class PedidoService {
         servicioEntregaDAO.save(servicioEntrega);
         logger.info("Servicio de entrega creado para el pedido: {}", pedido);
         return servicioEntrega;
+    }
+
+    /**
+     * Busca un cliente por su ID.
+     *
+     * @param id Identificador del cliente
+     * @return Cliente encontrado o null si no se encuentra
+     */
+    public Cliente findClienteById(Long id) {
+        return clienteDAO.findById(id).orElse(null); // Maneja el caso de null según sea necesario
+    }
+
+    /**
+     * Busca un restaurante por su ID.
+     *
+     * @param id Identificador del restaurante
+     * @return Restaurante encontrado o null si no se encuentra
+     */
+    public Restaurante findRestauranteById(Long id) {
+        return restauranteDAO.findById(id).orElse(null);
+    }
+
+    /**
+     * Busca una lista de ítems de menú por sus IDs.
+     *
+     * @param ids Lista de IDs de ítems del menú
+     * @return Lista de ítems del menú encontrados
+     */
+    public List<ItemMenu> findItemsByIds(List<Long> ids) {
+        return itemMenuDAO.findAllById(ids);
+    }
+
+    /**
+     * Busca un ítem de menú por su ID.
+     *
+     * @param id Identificador del ítem del menú
+     * @return Ítem del menú encontrado o null si no se encuentra
+     */
+    public ItemMenu findItemById(Long id) {
+        return itemMenuDAO.findById(id).orElse(null);
+    }
+
+    /**
+     * Comienza un nuevo pedido para un restaurante.
+     *
+     * @param restaurante Restaurante en el que se inicia el pedido
+     * @return Pedido inicializado para el restaurante
+     */
+    public Pedido comenzarPedido(Restaurante restaurante) {
+        return new Pedido(restaurante); // Asegúrate de que este constructor exista en Pedido
     }
 }

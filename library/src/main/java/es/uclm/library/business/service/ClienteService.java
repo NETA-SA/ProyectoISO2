@@ -3,6 +3,7 @@ package es.uclm.library.business.service;
 import es.uclm.library.business.entity.Cliente;
 import es.uclm.library.business.entity.Direccion;
 import es.uclm.library.business.entity.Restaurante;
+import es.uclm.library.business.entity.CodigoPostal;
 import es.uclm.library.persistence.ClienteDAO;
 import es.uclm.library.persistence.RestauranteDAO;
 import org.slf4j.Logger;
@@ -44,11 +45,12 @@ public class ClienteService {
      * @param zona Código postal de la zona
      * @return Lista de restaurantes en la zona
      */
-    public List<Restaurante> buscarRestaurantesPorZona(String zona) {
+    public List<Restaurante> buscarRestaurantesPorZona(CodigoPostal zona) {
         List<Restaurante> restaurantes = restauranteDAO.buscarPorCodigoPostal(zona);
         logger.info("Encontrados {} restaurantes en la zona: {}", restaurantes.size(), zona);
         return restaurantes;
     }
+
 
     /**
      * Marca un restaurante como favorito para un cliente.
