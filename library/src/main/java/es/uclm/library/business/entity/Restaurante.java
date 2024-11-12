@@ -2,7 +2,7 @@ package es.uclm.library.business.entity;
 
 import jakarta.persistence.*;
 import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @Entity
 public class Restaurante extends Usuario {
@@ -25,20 +25,25 @@ public class Restaurante extends Usuario {
 
 	// Relación con CodigoPostal
 	@ManyToOne
-	@JoinColumn(name = "codigo_postal_id", nullable = false) // Asumiendo que cada restaurante tiene un código postal
+	@JoinColumn(name = "codigo_postal_id", nullable = false)
 	private CodigoPostal codigoPostal;
+
+	// Relación con ItemMenu para representar el menú del restaurante
+	@OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL)
+	private List<ItemMenu> items; // Define el campo items
 
 	// Constructor por defecto
 	public Restaurante() {}
 
 	// Constructor con parámetros
-	public Restaurante(String nombre, String cif, Direccion direccion, CodigoPostal codigoPostal, Collection<Pedido> pedidos, Collection<CartaMenu> cartasMenu) {
+	public Restaurante(String nombre, String cif, Direccion direccion, CodigoPostal codigoPostal, Collection<Pedido> pedidos, Collection<CartaMenu> cartasMenu, List<ItemMenu> items) {
 		this.nombre = nombre;
 		this.cif = cif;
 		this.direccion = direccion;
 		this.codigoPostal = codigoPostal;
 		this.pedidos = pedidos;
 		this.cartasMenu = cartasMenu;
+		this.items = items;
 	}
 
 	// Getters y Setters
@@ -90,15 +95,16 @@ public class Restaurante extends Usuario {
 		this.codigoPostal = codigoPostal;
 	}
 
-	// Método para listar menú (esqueleto)
-	public List<ItemMenu> listarMenu(String idRestaurante) {
-		// TODO - implementar lógica para listar el menú
-		throw new UnsupportedOperationException();
+	public List<ItemMenu> getItems() {
+		return items;
 	}
+
 	public void setItems(List<ItemMenu> items) {
 		this.items = items;
 	}
-	public List<ItemMenu> getItems() {
-		return items;
+
+	// Método para listar menú (esqueleto)
+	public List<ItemMenu> listarMenu(String idRestaurante) {
+		return items; // Retorna la lista de ítems de menú asociados al restaurante
 	}
 }
