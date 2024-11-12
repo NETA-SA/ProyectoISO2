@@ -14,6 +14,11 @@ public class Direccion {
 	@JoinColumn(name = "codigo_postal_id")
 	private CodigoPostal codigoPostal;
 
+	@ManyToOne
+	@JoinColumn(name = "cliente_id")
+	private Cliente cliente;
+
+
 	@Column(nullable = false)
 	private String calle;
 
