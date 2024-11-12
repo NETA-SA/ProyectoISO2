@@ -14,6 +14,9 @@ public class ItemMenu {
 	@Column(name = "Tipo_Item_Menu", nullable = false)
 	private TipoItemMenu tipo;
 
+	@ManyToOne
+	@JoinColumn(name = "restaurante_id")
+	private Restaurante restaurante;
 
 	@Column(nullable = false)
 	private String nombre;
