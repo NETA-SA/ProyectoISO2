@@ -31,3 +31,17 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Ignore .dat files
+*.dat
+
+# Ignore data source files
+dataSources.xml
+db.lcl
+derby.log
+log.ctrl
+log1.dat
+logmirror.ctrl
+
+# Ignore IntelliJ IDEA project file
+ProyectoISO2.iml
