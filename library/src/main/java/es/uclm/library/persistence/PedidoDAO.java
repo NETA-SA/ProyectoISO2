@@ -8,6 +8,4 @@ import org.springframework.stereotype.Repository;
 public interface PedidoDAO extends JpaRepository<Pedido, Long> {
 
 
-
-
 }

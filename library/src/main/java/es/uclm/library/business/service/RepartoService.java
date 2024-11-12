@@ -23,27 +23,6 @@ public class RepartoService {
     @Autowired
     private RepartidorDAO repartidorDAO;
 
-//    /**
-//     * Marca un pedido como recogido.
-//     *
-//     * @param servicio Servicio de entrega a actualizar
-//     */
-//    public void marcarPedidoRecogido(ServicioEntrega servicio) {
-//        servicio.setRecogido(true);
-//        servicioEntregaDAO.update(servicio);
-//        logger.info("Pedido marcado como recogido para el servicio de entrega: {}", servicio);
-//    }
-//
-//    /**
-//     * Marca un pedido como entregado.
-//     *
-//     * @param servicio Servicio de entrega a actualizar
-//     */
-//    public void marcarPedidoEntregado(ServicioEntrega servicio) {
-//        servicio.setEntregado(true);
-//        servicioEntregaDAO.update(servicio);
-//        logger.info("Pedido marcado como entregado para el servicio de entrega: {}", servicio);
-//    }
 
 
 }

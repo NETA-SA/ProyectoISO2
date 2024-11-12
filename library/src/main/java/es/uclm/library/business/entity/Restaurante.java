@@ -103,8 +103,8 @@ public class Restaurante extends Usuario {
 		this.items = items;
 	}
 
-	// Método para listar menú (esqueleto)
+	// Metodo para listar menu de un restaurante
 	public List<ItemMenu> listarMenu(String idRestaurante) {
-		return items; // Retorna la lista de ítems de menú asociados al restaurante
+		return items; // Retorna la lista de ítems de menu asociados al restaurante
 	}
 }

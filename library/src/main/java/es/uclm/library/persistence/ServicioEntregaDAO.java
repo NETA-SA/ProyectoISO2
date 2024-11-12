@@ -6,7 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ServicioEntregaDAO extends JpaRepository<ServicioEntrega, Long> {
-    // Aquí puedes agregar métodos personalizados, si es necesario
 
-    // List<ServicioEntrega> findByRepartidorId(Long repartidorId);
 }

@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ItemMenuDAO extends JpaRepository<ItemMenu, Long> {
-    // Puedes agregar métodos personalizados aquí si es necesario
+
 }
