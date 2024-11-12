@@ -63,4 +63,8 @@ public class ClienteService {
         clienteDAO.save(cliente);
         logger.info("Restaurante {} añadido a favoritos del cliente {}", restaurante, cliente);
     }
+
+    public Cliente findById(Long id) {
+        return clienteDAO.findById(id).orElse(null);
+    }
 }

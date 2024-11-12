@@ -9,5 +9,4 @@ public interface RestauranteDAO extends JpaRepository<Restaurante, Long> {
 	// Aquí puedes agregar métodos personalizados, si es necesario
 
 
-	// List<Restaurante> findByNombre(String nombre);
 }
