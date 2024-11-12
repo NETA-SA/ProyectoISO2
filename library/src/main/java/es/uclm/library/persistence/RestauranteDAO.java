@@ -6,7 +6,14 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface RestauranteDAO extends JpaRepository<Restaurante, Long> {
-	// Aquí puedes agregar métodos personalizados, si es necesario
+
+    List<Restaurante> findByCodigoPostal(CodigoPostal codigoPostal);
+
+    Restaurante findByName(String name);
+
+    void update(Restaurante restaurante);
+
+
 
 
 }

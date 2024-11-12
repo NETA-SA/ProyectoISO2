@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
 
 @Service
 public class PedidoService {
@@ -42,13 +42,17 @@ public class PedidoService {
      * Realiza un nuevo pedido.
      *
      * @param cliente Cliente que realiza el pedido
-     * @param restaurante Restaurante al que se pide
-     * @param items Lista de ítems del menú
+     * @param pago Información de pago del pedido
+     * @param items Lista de ítems del menú incluidos en el pedido
+     * @param restaurante Restaurante al que se realiza el pedido
+     * @param entrega Información sobre el servicio de entrega del pedido
+     * @param estado Estado actual del pedido
+     * @param fecha Fecha de realización del pedido
      * @return Pedido creado
      */
-    public Pedido realizarPedido(Cliente cliente, Restaurante restaurante, List<ItemMenu> items) {
-        Pedido pedido = new Pedido(cliente, restaurante, items);
-        pedidoDAO.save(pedido);
+    public Pedido realizarPedido(Cliente cliente, Pago pago, Collection<ItemMenu> items, Restaurante restaurante, ServicioEntrega entrega, EstadoPedido estado, Date fecha) {
+        Pedido pedido = new Pedido(cliente, pago, items, restaurante, entrega, estado, fecha);
+        pedidoDAO.save(pedido); // Guarda el pedido en la base de datos
         logger.info("Pedido creado y guardado: {}", pedido);
         return pedido;
     }
@@ -61,7 +65,7 @@ public class PedidoService {
      */
     public void anadirItemMenu(Pedido pedido, ItemMenu item) {
         pedido.getItems().add(item);
-        pedidoDAO.update(pedido);
+        pedidoDAO.save(pedido);
         logger.info("Ítem añadido al pedido: {}", item);
     }
 
@@ -80,12 +84,15 @@ public class PedidoService {
     /**
      * Crea un servicio de entrega para un pedido.
      *
-     * @param pedido Pedido a entregar
-     * @param direccion Dirección de entrega
+     * @param pedido Pedido para el cual se crea el servicio de entrega
+     * @param direccion Dirección de entrega del pedido
+     * @param repartidor Repartidor asignado al servicio de entrega
+     * @param fechaRecepcion Fecha en la que el pedido es recogido
+     * @param fechaEntrega Fecha estimada o real de entrega del pedido
      * @return Servicio de entrega creado
      */
-    public ServicioEntrega crearServicioEntrega(Pedido pedido, Direccion direccion) {
-        ServicioEntrega servicioEntrega = new ServicioEntrega(pedido, direccion);
+    public ServicioEntrega crearServicioEntrega(Pedido pedido, Direccion direccion, Repartidor repartidor, Date fechaRecepcion, Date fechaEntrega) {
+        ServicioEntrega servicioEntrega = new ServicioEntrega(pedido, direccion, repartidor, fechaRecepcion, fechaEntrega);
         servicioEntregaDAO.save(servicioEntrega);
         logger.info("Servicio de entrega creado para el pedido: {}", pedido);
         return servicioEntrega;
@@ -98,7 +105,7 @@ public class PedidoService {
      * @return Cliente encontrado o null si no se encuentra
      */
     public Cliente findClienteById(Long id) {
-        return clienteDAO.findById(id).orElse(null); // Maneja el caso de null según sea necesario
+        return clienteDAO.findById(id).orElse(null);
     }
 
     /**

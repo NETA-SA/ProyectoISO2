@@ -6,8 +6,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UsuarioDAO extends JpaRepository<Usuario, String> {
-    // Aquí puedes agregar métodos personalizados, si es necesario
 
-    // Usuario findByEmail(String email);
+
+
 
 }

@@ -26,7 +26,7 @@ public class LoginService {
         logger.info("Autenticando usuario con ID: {}", id);
 
         // Busca al usuario por su ID
-        Usuario usuario = usuarioDAO.findById(id);
+        Usuario usuario = usuarioDAO.findById(id).orElse(null);
 
         if (usuario != null && usuario.getPass().equals(pass)) {
             logger.info("Autenticación exitosa para el usuario: {}", id);

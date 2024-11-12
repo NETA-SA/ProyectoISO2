@@ -46,10 +46,11 @@ public class ClienteService {
      * @return Lista de restaurantes en la zona
      */
     public List<Restaurante> buscarRestaurantesPorZona(CodigoPostal zona) {
-        List<Restaurante> restaurantes = restauranteDAO.buscarPorCodigoPostal(zona);
+        List<Restaurante> restaurantes = restauranteDAO.findByCodigoPostal(zona);
         logger.info("Encontrados {} restaurantes en la zona: {}", restaurantes.size(), zona);
         return restaurantes;
     }
+
 
 
     /**

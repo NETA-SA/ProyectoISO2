@@ -70,4 +70,9 @@ public class RestauranteService {
         logger.info("Ítem de menú creado: {}", savedItem);
         return savedItem;
     }
+
+    public Restaurante findById(Long id) {
+        return restauranteDAO.findById(id).orElse(null);
+    }
+
 }

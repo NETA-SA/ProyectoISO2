@@ -23,14 +23,20 @@ public class Restaurante extends Usuario {
 	@Column(nullable = false, unique = true)
 	private String cif;
 
+	// Relación con CodigoPostal
+	@ManyToOne
+	@JoinColumn(name = "codigo_postal_id", nullable = false) // Asumiendo que cada restaurante tiene un código postal
+	private CodigoPostal codigoPostal;
+
 	// Constructor por defecto
 	public Restaurante() {}
 
 	// Constructor con parámetros
-	public Restaurante(String nombre, String cif, Direccion direccion, Collection<Pedido> pedidos, Collection<CartaMenu> cartasMenu) {
+	public Restaurante(String nombre, String cif, Direccion direccion, CodigoPostal codigoPostal, Collection<Pedido> pedidos, Collection<CartaMenu> cartasMenu) {
 		this.nombre = nombre;
 		this.cif = cif;
 		this.direccion = direccion;
+		this.codigoPostal = codigoPostal;
 		this.pedidos = pedidos;
 		this.cartasMenu = cartasMenu;
 	}
@@ -76,9 +82,23 @@ public class Restaurante extends Usuario {
 		this.cif = cif;
 	}
 
+	public CodigoPostal getCodigoPostal() {
+		return codigoPostal;
+	}
+
+	public void setCodigoPostal(CodigoPostal codigoPostal) {
+		this.codigoPostal = codigoPostal;
+	}
+
 	// Método para listar menú (esqueleto)
 	public List<ItemMenu> listarMenu(String idRestaurante) {
 		// TODO - implementar lógica para listar el menú
 		throw new UnsupportedOperationException();
+	}
+	public void setItems(List<ItemMenu> items) {
+		this.items = items;
+	}
+	public List<ItemMenu> getItems() {
+		return items;
 	}
 }
