@@ -32,6 +32,9 @@ build/
 ### VS Code ###
 .vscode/
 
+# Ignore database lock file
+db.lck
+
 # Ignore .dat files
 *.dat
 
