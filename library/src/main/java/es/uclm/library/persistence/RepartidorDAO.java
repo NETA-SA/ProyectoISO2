@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface RepartidorDAO extends JpaRepository<Repartidor, Long> {
-    // Métodos personalizados, si es necesario, se pueden agregar aquí
+
 }

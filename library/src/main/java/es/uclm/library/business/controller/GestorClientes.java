@@ -26,78 +26,78 @@ public class GestorClientes {
 	@Autowired
 	private RestauranteService restauranteService;
 
-
-	/**
-	 * Muestra el formulario para buscar restaurantes en una zona específica.
-	 *
-	 * @return Nombre de la plantilla Thymeleaf para el formulario de búsqueda
-	 */
-	@GetMapping("/restaurantes/zona")
-	public String mostrarFormularioBusquedaPorZona() {
-		logger.info("Mostrando formulario para buscar restaurantes por zona.");
-		return "buscarRestaurantesPorZona"; // Nombre de la plantilla Thymeleaf
-	}
-
-	/**
-	 * Busca restaurantes en una zona específica.
-	 *
-	 * @param zona Código postal de la zona
-	 * @param model Model para pasar datos a la vista
-	 * @return Vista con la lista de restaurantes encontrados
-	 */
-	@PostMapping("/restaurantes/zona")
-	public String buscarRestaurante(@RequestParam CodigoPostal zona, Model model) {
-		logger.info("Buscando restaurantes en la zona: {}", zona);
-		List<Restaurante> restaurantes = clienteService.buscarRestaurantesPorZona(zona);
-		model.addAttribute("restaurantes", restaurantes);
-		logger.info("Encontrados {} restaurantes en la zona {}", restaurantes.size(), zona);
-		return "listaRestaurantes"; // Vista Thymeleaf para mostrar resultados
-	}
-
-	/**
-	 * Muestra el formulario para registrar un nuevo cliente.
-	 *
-	 * @return Nombre de la plantilla Thymeleaf para el formulario de registro
-	 */
-	@GetMapping("/registrar")
-	public String mostrarFormularioRegistroCliente() {
-		logger.info("Mostrando formulario de registro para un nuevo cliente.");
-		return "registroCliente"; // Nombre de la plantilla Thymeleaf
-	}
-
-	/**
-	 * Registra un nuevo cliente en el sistema.
-	 *
-	 * @param nombre Nombre del cliente
-	 * @param apellido Apellido del cliente
-	 * @param direccion Dirección del cliente
-	 * @param model Model para pasar datos a la vista
-	 * @return Redirección o vista de confirmación
-	 */
-	@PostMapping("/registrar")
-	public String registrarCliente(@RequestParam String nombre, @RequestParam String apellido, @RequestParam Direccion direccion, Model model) {
-		logger.info("Registrando nuevo cliente: {} {}", nombre, apellido);
-		Cliente cliente = clienteService.registrarCliente(nombre, apellido, direccion);
-		model.addAttribute("cliente", cliente);
-		logger.info("Cliente registrado con éxito: {}", cliente);
-		return "confirmacionRegistroCliente"; // Vista Thymeleaf para confirmar el registro
-	}
-
-	/**
-	 * Marca un restaurante como favorito para un cliente.
-	 *
-	 * @param cliente Cliente que marca el favorito
-	 * @param restaurante Restaurante a marcar como favorito
-	 * @param model Model para pasar datos a la vista
-	 * @return Vista de confirmación
-	 */
-	@PostMapping("/favorito")
-	public String favorito(@RequestParam Long clienteId, @RequestParam Long restauranteId, Model model) {
-		Cliente cliente = clienteService.findById(clienteId); // Este método debe implementarse en ClienteService
-		Restaurante restaurante = restauranteService.findById(restauranteId); // Similar para RestauranteService
-		clienteService.agregarRestauranteFavorito(cliente, restaurante);
-		model.addAttribute("mensaje", "Restaurante añadido a favoritos.");
-		return "confirmacionFavorito"; // vista thymeleaf
-	}
+//
+//	/**
+//	 * Muestra el formulario para buscar restaurantes en una zona específica.
+//	 *
+//	 * @return Nombre de la plantilla Thymeleaf para el formulario de búsqueda
+//	 */
+//	@GetMapping("/restaurantes/zona")
+//	public String mostrarFormularioBusquedaPorZona() {
+//		logger.info("Mostrando formulario para buscar restaurantes por zona.");
+//		return "buscarRestaurantesPorZona"; // Nombre de la plantilla Thymeleaf
+//	}
+//
+//	/**
+//	 * Busca restaurantes en una zona específica.
+//	 *
+//	 * @param zona Código postal de la zona
+//	 * @param model Model para pasar datos a la vista
+//	 * @return Vista con la lista de restaurantes encontrados
+//	 */
+//	@PostMapping("/restaurantes/zona")
+//	public String buscarRestaurante(@RequestParam CodigoPostal zona, Model model) {
+//		logger.info("Buscando restaurantes en la zona: {}", zona);
+//		List<Restaurante> restaurantes = clienteService.buscarRestaurantesPorZona(zona);
+//		model.addAttribute("restaurantes", restaurantes);
+//		logger.info("Encontrados {} restaurantes en la zona {}", restaurantes.size(), zona);
+//		return "listaRestaurantes"; // Vista Thymeleaf para mostrar resultados
+//	}
+//
+//	/**
+//	 * Muestra el formulario para registrar un nuevo cliente.
+//	 *
+//	 * @return Nombre de la plantilla Thymeleaf para el formulario de registro
+//	 */
+//	@GetMapping("/registrar")
+//	public String mostrarFormularioRegistroCliente() {
+//		logger.info("Mostrando formulario de registro para un nuevo cliente.");
+//		return "registroCliente"; // Nombre de la plantilla Thymeleaf
+//	}
+//
+//	/**
+//	 * Registra un nuevo cliente en el sistema.
+//	 *
+//	 * @param nombre Nombre del cliente
+//	 * @param apellido Apellido del cliente
+//	 * @param direccion Dirección del cliente
+//	 * @param model Model para pasar datos a la vista
+//	 * @return Redirección o vista de confirmación
+//	 */
+//	@PostMapping("/registrar")
+//	public String registrarCliente(@RequestParam String nombre, @RequestParam String apellido, @RequestParam Direccion direccion, Model model) {
+//		logger.info("Registrando nuevo cliente: {} {}", nombre, apellido);
+//		Cliente cliente = clienteService.registrarCliente(nombre, apellido, direccion);
+//		model.addAttribute("cliente", cliente);
+//		logger.info("Cliente registrado con éxito: {}", cliente);
+//		return "confirmacionRegistroCliente"; // Vista Thymeleaf para confirmar el registro
+//	}
+//
+//	/**
+//	 * Marca un restaurante como favorito para un cliente.
+//	 *
+//	 * @param cliente Cliente que marca el favorito
+//	 * @param restaurante Restaurante a marcar como favorito
+//	 * @param model Model para pasar datos a la vista
+//	 * @return Vista de confirmación
+//	 */
+//	@PostMapping("/favorito")
+//	public String favorito(@RequestParam Long clienteId, @RequestParam Long restauranteId, Model model) {
+//		Cliente cliente = clienteService.findById(clienteId); // Este método debe implementarse en ClienteService
+//		Restaurante restaurante = restauranteService.findById(restauranteId); // Similar para RestauranteService
+//		clienteService.agregarRestauranteFavorito(cliente, restaurante);
+//		model.addAttribute("mensaje", "Restaurante añadido a favoritos.");
+//		return "confirmacionFavorito"; // vista thymeleaf
+//	}
 
 }

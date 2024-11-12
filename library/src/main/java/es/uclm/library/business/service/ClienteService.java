@@ -24,48 +24,48 @@ public class ClienteService {
     @Autowired
     private RestauranteDAO restauranteDAO;
 
-    /**
-     * Registra un nuevo cliente en el sistema.
-     *
-     * @param nombre Nombre del cliente
-     * @param apellido Apellido del cliente
-     * @param direccion Dirección del cliente
-     * @return Cliente registrado
-     */
-    public Cliente registrarCliente(String nombre, String apellido, Direccion direccion) {
-        Cliente cliente = new Cliente(nombre, apellido, direccion);
-        Cliente savedCliente = clienteDAO.save(cliente);
-        logger.info("Cliente registrado exitosamente: {}", savedCliente);
-        return savedCliente;
-    }
-
-    /**
-     * Busca restaurantes en una zona específica.
-     *
-     * @param zona Código postal de la zona
-     * @return Lista de restaurantes en la zona
-     */
-    public List<Restaurante> buscarRestaurantesPorZona(CodigoPostal zona) {
-        List<Restaurante> restaurantes = restauranteDAO.findByCodigoPostal(zona);
-        logger.info("Encontrados {} restaurantes en la zona: {}", restaurantes.size(), zona);
-        return restaurantes;
-    }
-
-
-
-    /**
-     * Marca un restaurante como favorito para un cliente.
-     *
-     * @param cliente Cliente que marca el favorito
-     * @param restaurante Restaurante a marcar como favorito
-     */
-    public void agregarRestauranteFavorito(Cliente cliente, Restaurante restaurante) {
-        cliente.getFavoritos().add(restaurante);
-        clienteDAO.save(cliente);
-        logger.info("Restaurante {} añadido a favoritos del cliente {}", restaurante, cliente);
-    }
-
-    public Cliente findById(Long id) {
-        return clienteDAO.findById(id).orElse(null);
-    }
+//    /**
+//     * Registra un nuevo cliente en el sistema.
+//     *
+//     * @param nombre Nombre del cliente
+//     * @param apellido Apellido del cliente
+//     * @param direccion Dirección del cliente
+//     * @return Cliente registrado
+//     */
+//    public Cliente registrarCliente(String nombre, String apellido, Direccion direccion) {
+//        Cliente cliente = new Cliente(nombre, apellido, direccion);
+//        Cliente savedCliente = clienteDAO.save(cliente);
+//        logger.info("Cliente registrado exitosamente: {}", savedCliente);
+//        return savedCliente;
+//    }
+//
+//    /**
+//     * Busca restaurantes en una zona específica.
+//     *
+//     * @param zona Código postal de la zona
+//     * @return Lista de restaurantes en la zona
+//     */
+//    public List<Restaurante> buscarRestaurantesPorZona(CodigoPostal zona) {
+//        List<Restaurante> restaurantes = restauranteDAO.findByCodigoPostal(zona);
+//        logger.info("Encontrados {} restaurantes en la zona: {}", restaurantes.size(), zona);
+//        return restaurantes;
+//    }
+//
+//
+//
+//    /**
+//     * Marca un restaurante como favorito para un cliente.
+//     *
+//     * @param cliente Cliente que marca el favorito
+//     * @param restaurante Restaurante a marcar como favorito
+//     */
+//    public void agregarRestauranteFavorito(Cliente cliente, Restaurante restaurante) {
+//        cliente.getFavoritos().add(restaurante);
+//        clienteDAO.save(cliente);
+//        logger.info("Restaurante {} añadido a favoritos del cliente {}", restaurante, cliente);
+//    }
+//
+//    public Cliente findById(Long id) {
+//        return clienteDAO.findById(id).orElse(null);
+//    }
 }

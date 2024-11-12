@@ -10,7 +10,7 @@ import java.util.List;
 public interface ClienteDAO extends JpaRepository<Cliente, String> {
 
     // Ejemplo de un método personalizado para buscar clientes por nombre
-    List<Cliente> findByNombre(String nombre);
+    //List<Cliente> findByNombre(String nombre);
 
 
 }
