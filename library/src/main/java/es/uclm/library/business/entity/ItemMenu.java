@@ -10,9 +10,10 @@ public class ItemMenu {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@ManyToOne
-	@JoinColumn(name = "tipo_item_menu_id")
+	@Enumerated(EnumType.STRING)
+	@Column(name = "Tipo_Item_Menu", nullable = false)
 	private TipoItemMenu tipo;
+
 
 	@Column(nullable = false)
 	private String nombre;
