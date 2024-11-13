@@ -8,6 +8,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import es.uclm.library.business.entity.Login;
+import es.uclm.library.business.entity.Usuario;
+
 
 @Controller
 @RequestMapping("/login")
@@ -21,8 +23,11 @@ public class GestorLogin {
 	// Metodo para mostrar el formulario de login 
 	@GetMapping
 	public String showLoginForm(Model model){
-		model.addAttribute("login", new Login());
-		return "login"; // Apunta al formulario de login de interfaces
+		//model.addAttribute("usuario", new Usuario());
+		//return "login"; // Apunta al formulario de login de interfaces
+		Usuario usuario = new Usuario();
+        	model.addAttribute("usuario", usuario);
+        	return "login"; // nombre de la plantilla
 	}
 
 	// Metodo para procesar el formulario login

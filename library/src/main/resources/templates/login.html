@@ -6,14 +6,17 @@
     </head>
     <body>
         <h1>Iniciar sesión</h1>
-        <form th:action="@{/login}" method="post">
+        <!-- Asociamos el formulario al objeto 'usuario' -->
+        <form th:action="@{/login}" method="post" th:object="${usuario}">
             <div>
-                <label for="">Usuario:</label>
+                <label for="idUsuario">Usuario:</label>
+                <!-- Campo que está asociado al atributo 'idUsuario' del objeto 'usuario' -->
                 <input type="text" th:field="*{idUsuario}" id="idUsuario" name="idUsuario" required />
             </div>
             <div>
                 <label for="pass">Contraseña:</label>
-                <input type="pass" th:field="*{pass}" id="pass" name="pass" required />
+                <!-- Campo asociado al atributo 'pass' del objeto 'usuario' -->
+                <input type="password" th:field="*{pass}" id="pass" name="pass" required />
             </div>
             <div>
                 <button type="submit">Entrar</button>
