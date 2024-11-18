@@ -1,0 +1,53 @@
+HELP.md
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+/.idea/
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
+
+# Ignore database lock file
+db.lck
+
+# Ignore .dat files
+*.dat
+
+# Ignore data source files
+dataSources.xml
+db.lcl
+derby.log
+log.ctrl
+log1.dat
+logmirror.ctrl
+
+# Ignore IntelliJ IDEA project file
+ProyectoISO2.iml
+
+/RESTAURANTE/
+/../.idea/
