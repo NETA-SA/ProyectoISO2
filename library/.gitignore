@@ -14,7 +14,7 @@ target/
 .sts4-cache
 
 ### IntelliJ IDEA ###
-.idea/
+/.idea/
 *.iws
 *.iml
 *.ipr
@@ -48,3 +48,6 @@ logmirror.ctrl
 
 # Ignore IntelliJ IDEA project file
 ProyectoISO2.iml
+
+/RESTAURANTE/
+../.idea/
