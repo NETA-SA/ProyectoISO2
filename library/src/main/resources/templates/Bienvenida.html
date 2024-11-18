@@ -1,0 +1,30 @@
+<!DOCTYPE HTML>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <title>Inicio</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+        .button-container {
+            margin-top: 20px;
+        }
+        .button-container button {
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+<h1>Bienvenido a la Aplicación</h1>
+<div class="button-container">
+    <button onclick="location.href='/login'">Log In</button>
+    <button onclick="location.href='/signin'">Sign In</button>
+    <button onclick="location.href='/listar-restaurantes'">Listar Restaurantes</button>
+</div>
+</body>
+</html>
