@@ -54,6 +54,7 @@ public class GestorRegistro {
                     throw new IllegalArgumentException("Invalid role: " + role);
             }
             model.addAttribute("message", "Registration successful");
+            return "redirect:/Bienvenida";
         } catch (Exception e) {
             logger.error("Registration error", e);
             model.addAttribute("message", "Registration failed");
