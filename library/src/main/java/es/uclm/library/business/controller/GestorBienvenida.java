@@ -15,7 +15,7 @@ public class GestorBienvenida {
     @GetMapping("/")
     public String bienvenida(Model model) {
         logger.info("Handling welcome request");
-	model.addAttribute("mensaje", "¡Bienvenido a la aplicación!");
+	    model.addAttribute("mensaje", "¡Bienvenido a la aplicación!");
         return "Bienvenida"; // El nombre de la plantilla sin la extensión .html
     }
 }

@@ -2,10 +2,18 @@ package es.uclm.library.business.entity;
 
 import jakarta.persistence.*;
 import java.util.Collection;
-import java.util.*;
+import java.util.List;
 
 @Entity
-public class Restaurante extends Usuario {
+public class Restaurante {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+
+	@OneToOne
+	@JoinColumn(name = "idUsuario", nullable = false)
+	private Usuario usuario;
 
 	@OneToMany(mappedBy = "restaurante")
 	private Collection<Pedido> pedidos;
@@ -23,20 +31,19 @@ public class Restaurante extends Usuario {
 	@Column(nullable = false, unique = true)
 	private String cif;
 
-	// Relación con CodigoPostal
 	@ManyToOne
 	@JoinColumn(name = "codigo_postal_id", nullable = false)
 	private CodigoPostal codigoPostal;
 
-	// Relación con ItemMenu para representar el menú del restaurante
 	@OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL)
-	private List<ItemMenu> items; // Define el campo items
+	private List<ItemMenu> items;
 
-	// Constructor por defecto
+	// Default constructor
 	public Restaurante() {}
 
-	// Constructor con parámetros
-	public Restaurante(String nombre, String cif, Direccion direccion, CodigoPostal codigoPostal, Collection<Pedido> pedidos, Collection<CartaMenu> cartasMenu, List<ItemMenu> items) {
+	// Constructor with parameters
+	public Restaurante(Usuario usuario, String nombre, String cif, Direccion direccion, CodigoPostal codigoPostal, Collection<Pedido> pedidos, Collection<CartaMenu> cartasMenu, List<ItemMenu> items) {
+		this.usuario = usuario;
 		this.nombre = nombre;
 		this.cif = cif;
 		this.direccion = direccion;
@@ -46,7 +53,19 @@ public class Restaurante extends Usuario {
 		this.items = items;
 	}
 
-	// Getters y Setters
+	// Getters and Setters
+	public Long getId() {
+		return id;
+	}
+
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
+
 	public Collection<Pedido> getPedidos() {
 		return pedidos;
 	}
@@ -103,8 +122,7 @@ public class Restaurante extends Usuario {
 		this.items = items;
 	}
 
-	// Metodo para listar menu de un restaurante
 	public List<ItemMenu> listarMenu(String idRestaurante) {
-		return items; // Retorna la lista de ítems de menu asociados al restaurante
+		return items;
 	}
 }
