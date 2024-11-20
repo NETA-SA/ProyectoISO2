@@ -14,5 +14,17 @@ public class LoginService {
 
     @Autowired
     private UsuarioDAO usuarioDAO;
+    
+    public boolean authenticate(String idUsuario, String pass) {
+        Usuario usuario = usuarioDAO.findByIdUsuario(idUsuario);
 
+        // Verifica si el usuario existe y si la contraseña es correcta
+        if (usuario != null && usuario.getPass().equals(pass)) {
+            logger.info("Usuario autenticado correctamente: " + idUsuario);
+            return true;
+        } else {
+            logger.warn("Falló la autenticación para el usuario: " + idUsuario);
+            return false;
+        }
+    }
 }
