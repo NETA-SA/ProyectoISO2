@@ -18,10 +18,10 @@ public class GestorBienvenida {
 
     private static final Logger logger = LoggerFactory.getLogger(GestorBienvenida.class);
 
-    @GetMapping("/")
+    @GetMapping("/bienvenida")
     public String welcome() {
         logger.info("Handling welcome request");
-        return "Bienvenida";
+        return "bienvenida";
     }
 }
 =======
