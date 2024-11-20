@@ -1,6 +1,9 @@
 package es.uclm.library.business.controller;
 
 import es.uclm.library.business.service.LoginService;
+import es.uclm.library.business.entity.Usuario;
+import es.uclm.library.business.entity.Restaurante;
+import es.uclm.library.business.entity.Repartidor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +19,5 @@ public class GestorLogin {
 
 	@Autowired
 	private LoginService loginService;
-
 
 }

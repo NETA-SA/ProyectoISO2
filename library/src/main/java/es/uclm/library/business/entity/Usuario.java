@@ -13,16 +13,16 @@ public class Usuario {
 	@Column(nullable = false)
 	private String pass;
 
-	private int attribute; // Ajustar según el propósito real
+	private String  rol; // Ajustar según el propósito real
 
 	// Constructor por defecto
 	public Usuario() {}
 
 	// Constructor con parámetros
-	public Usuario(String idUsuario, String pass, int attribute) {
+	public Usuario(String idUsuario, String pass, String rol) {
 		this.idUsuario = idUsuario;
 		this.pass = pass;
-		this.attribute = attribute;
+		this.rol = rol;
 	}
 
 	// Getters y Setters
@@ -42,11 +42,11 @@ public class Usuario {
 		this.pass = pass;
 	}
 
-	public int getAttribute() {
-		return attribute;
+	public String getRol() {
+		return rol;
 	}
 
-	public void setAttribute(int attribute) {
-		this.attribute = attribute;
+	public void setRol(String rol) {
+		this.rol = rol;
 	}
 }

@@ -1,0 +1,50 @@
+<!DOCTYPE HTML>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <title>Registro</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .form-container div {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+<h1>Registro</h1>
+<div class="form-container">
+    <form action="/Registro" method="post">
+        <div>
+            <label for="role">Registrarse como:</label>
+            <select id="role" name="role">
+                <option value="restaurante">Restaurante</option>
+                <option value="repartidor">Repartidor</option>
+                <option value="usuario">Usuario</option>
+            </select>
+        </div>
+        <div>
+            <label for="email">Correo:</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        <div>
+            <label for="password">Contraseña:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <div>
+            <button type="submit">Registrarse</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>

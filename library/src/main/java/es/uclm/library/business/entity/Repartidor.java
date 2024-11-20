@@ -1,92 +1,40 @@
 package es.uclm.library.business.entity;
 
 import jakarta.persistence.*;
-import java.util.Collection;
 
 @Entity
-public class Repartidor extends Usuario {
+public class Repartidor {
 
-	@OneToMany(mappedBy = "repartidor")
-	private Collection<ServicioEntrega> servicios;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-	@ManyToMany
-	@JoinTable(
-			name = "repartidor_zonas",
-			joinColumns = @JoinColumn(name = "repartidor_id"),
-			inverseJoinColumns = @JoinColumn(name = "codigo_postal_id")
-	)
-	private Collection<CodigoPostal> zonas;
+	@OneToOne
+	@JoinColumn(name = "idUsuario", nullable = false)
+	private Usuario usuario;
 
-	@Column(nullable = false)
-	private String nombre;
+	// Other fields and methods
 
-	@Column(nullable = false)
-	private String apellidos;
-
-	@Column(nullable = false, unique = true)
-	private String nif;
-
-	private int eficiencia;
-
-	// Constructor por defecto
+	// Default constructor
 	public Repartidor() {}
 
-	// Constructor con parámetros
-	public Repartidor(String nombre, String apellidos, String nif, int eficiencia, Collection<ServicioEntrega> servicios, Collection<CodigoPostal> zonas) {
-		this.nombre = nombre;
-		this.apellidos = apellidos;
-		this.nif = nif;
-		this.eficiencia = eficiencia;
-		this.servicios = servicios;
-		this.zonas = zonas;
+	// Constructor with parameters
+	public Repartidor(Usuario usuario) {
+		this.usuario = usuario;
 	}
 
-	// Getters y Setters
-	public Collection<ServicioEntrega> getServicios() {
-		return servicios;
+	// Getters and Setters
+	public Long getId() {
+		return id;
 	}
 
-	public void setServicios(Collection<ServicioEntrega> servicios) {
-		this.servicios = servicios;
+	public Usuario getUsuario() {
+		return usuario;
 	}
 
-	public Collection<CodigoPostal> getZonas() {
-		return zonas;
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
 	}
 
-	public void setZonas(Collection<CodigoPostal> zonas) {
-		this.zonas = zonas;
-	}
-
-	public String getNombre() {
-		return nombre;
-	}
-
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
-	}
-
-	public String getApellidos() {
-		return apellidos;
-	}
-
-	public void setApellidos(String apellidos) {
-		this.apellidos = apellidos;
-	}
-
-	public String getNif() {
-		return nif;
-	}
-
-	public void setNif(String nif) {
-		this.nif = nif;
-	}
-
-	public int getEficiencia() {
-		return eficiencia;
-	}
-
-	public void setEficiencia(int eficiencia) {
-		this.eficiencia = eficiencia;
-	}
+	// Other getters and setters
 }
