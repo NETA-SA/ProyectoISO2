@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 public class Usuario {
 
 	@Id
-	@Column(name = "id_usuario", nullable = false, unique = true)
+	@Column(name = "idUsuario", nullable = false, unique = true)
 	private String idUsuario;
 
 	@Column(nullable = false)

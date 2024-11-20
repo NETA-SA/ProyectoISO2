@@ -41,7 +41,7 @@ public class GestorLogin {
         if (loginService.authenticate(idUsuario, pass)) {
             logger.info("Inicio de sesión exitoso para el usuario: " + idUsuario);
             model.addAttribute("mensaje", "Inicio de sesion exitoso");
-            return "redirect:/Bienvenida"; // Redirige a una página de bienvenida o de inicio
+            return "redirect:/"; // Redirige a una página de bienvenida o de inicio
         } else {
             logger.warn("Inicio de sesion fallido para el usuario: " + idUsuario);
             model.addAttribute("error", "Credenciales incorrectas, inténtalo de nuevo");

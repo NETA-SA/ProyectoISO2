@@ -22,7 +22,7 @@ public class GestorRegistro {
 
     @GetMapping
     public String showRegistrationForm() {
-        return "Registro"; // Asegúrate de que este archivo HTML exista en src/main/resources/templates
+        return "Registro";
     }
 
     @PostMapping
@@ -36,6 +36,9 @@ public class GestorRegistro {
             usuario.setPass(password);
             usuario.setRol(role);
 
+            // Save the user first
+            loginService.registerUsuario(usuario);
+
             switch (role) {
                 case "restaurante":
                     Restaurante restaurante = new Restaurante();
@@ -48,13 +51,13 @@ public class GestorRegistro {
                     loginService.registerRepartidor(repartidor);
                     break;
                 case "usuario":
-                    loginService.registerUsuario(usuario);
+                    // User is already saved
                     break;
                 default:
                     throw new IllegalArgumentException("Invalid role: " + role);
             }
             model.addAttribute("message", "Registration successful");
-            return "redirect:/Bienvenida";
+
         } catch (Exception e) {
             logger.error("Registration error", e);
             model.addAttribute("message", "Registration failed");

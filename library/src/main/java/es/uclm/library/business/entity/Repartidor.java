@@ -10,7 +10,7 @@ public class Repartidor {
 	private Long id;
 
 	@OneToOne
-	@JoinColumn(name = "idUsuario", nullable = false)
+	@JoinColumn(name = "idUsuario",referencedColumnName = "idUsuario", nullable = false)
 	private Usuario usuario;
 
 	// Other fields and methods
