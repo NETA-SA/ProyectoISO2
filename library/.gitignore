@@ -1,53 +1,73 @@
-HELP.md
-target/
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+# Ignorar bases de datos y logs en RESTAURANTE
+RESTAURANTE/
+RESTAURANTE/**
 
-### STS ###
+# Ignorar archivos y carpetas generados
+target/
+build/
+out/
+
+# Ignorar configuraciones específicas de IDEs
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Eclipse
 .apt_generated
 .classpath
 .factorypath
 .project
-.settings
+.settings/
 .springBeans
 .sts4-cache
 
-### IntelliJ IDEA ###
-/.idea/
-*.iws
-*.iml
-*.ipr
+# VS Code
+.vscode/
 
-### NetBeans ###
+# NetBeans
 /nbproject/private/
 /nbbuild/
 /dist/
 /nbdist/
 /.nb-gradle/
-build/
+
+# Maven Wrapper
+.mvn/wrapper/maven-wrapper.jar
+!.mvn/wrapper/maven-wrapper.jar
+
+# Configuración temporal
+*.tmp
+*.swp
+*~
+*.log
+
+# Ignorar archivos de base de datos
+*.lck
+*.dat
+*.ctrl
+db.lck
+dbex.lck
+
+# No ignorar recursos de src/main o src/test (excepción para build y target en ellos)
+!**/src/main/**/target/
+!**/src/test/**/target/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
-### VS Code ###
-.vscode/
+# Archivos binarios de Java
+*.class
+*.jar
+*.war
+*.ear
 
-# Ignore database lock file
-db.lck
+# Informes y resultados de pruebas
+/target/surefire-reports/
+/target/test-classes/
+/target/test-results/
 
-# Ignore .dat files
-*.dat
-
-# Ignore data source files
-dataSources.xml
-db.lcl
-derby.log
-log.ctrl
-log1.dat
-logmirror.ctrl
-
-# Ignore IntelliJ IDEA project file
-ProyectoISO2.iml
-
-/RESTAURANTE/
-/../.idea/
+# Archivos de sistema operativo
+.DS_Store
+Thumbs.db
+desktop.ini
