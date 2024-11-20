@@ -12,7 +12,7 @@ public class GestorBienvenida {
 
     private static final Logger logger = LoggerFactory.getLogger(GestorBienvenida.class);
     
-    @GetMapping("/Bienvenida")
+    @GetMapping("/")
     public String bienvenida(Model model) {
         logger.info("Handling welcome request");
 	model.addAttribute("mensaje", "¡Bienvenido a la aplicación!");
