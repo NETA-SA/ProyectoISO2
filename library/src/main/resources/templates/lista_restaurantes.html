@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Lista de Restaurantes</title>
+</head>
+<body>
+<h1>Lista de Restaurantes</h1>
+
+<!-- Mensaje en caso de no encontrar restaurantes -->
+<div th:if="${#lists.isEmpty(restaurantes)}">
+    <p>No hay restaurantes disponibles.</p>
+</div>
+
+<!-- Lista de restaurantes -->
+<ul th:if="${!#lists.isEmpty(restaurantes)}">
+    <li th:each="restaurante : ${restaurantes}">
+        <a th:href="@{/restaurantes/{id}/menu(id=${restaurante.id})}"
+           th:text="${restaurante.nombre}"></a>
+    </li>
+</ul>
+</body>
+</html>

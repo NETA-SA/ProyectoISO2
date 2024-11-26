@@ -23,4 +23,29 @@ public class GestorRestaurantes {
 	@Autowired
 	private RestauranteService restauranteService;
 
+	@GetMapping
+	public String listarRestaurantes(Model model) {
+		logger.info("Solicitud para listar todos los restaurantes recibida");
+		List<Restaurante> restaurantes = restauranteService.obtenerListaDeRestaurantes();
+		logger.debug("Número de restaurantes: {}", restaurantes.size());
+		model.addAttribute("restaurantes", restaurantes);
+		return "lista_restaurantes";
+	}
+
+	@GetMapping("/{id}/menu")
+	public String listarItemsDelMenu(@PathVariable int id, Model model) {
+		logger.info("Solicitud para listar ítems del menú del restaurante con ID: {}", id);
+		try {
+			List<ItemMenu> items = restauranteService.obtenerItemsDeMenu((long) id);
+			logger.info("Items recibidos");
+			model.addAttribute("items", items);
+			return "lista_items_menu";
+		} catch (IllegalArgumentException e) {
+			logger.error("Error al intentar recuperar ítems del menú para el restaurante con ID: {}", id, e);
+			model.addAttribute("mensajeError", e.getMessage());
+			return "/redirect:/restaurantes";
+		}
+	}
 }
+
+
