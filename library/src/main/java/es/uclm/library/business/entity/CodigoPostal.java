@@ -1,40 +1,26 @@
 package es.uclm.library.business.entity;
 
-import jakarta.persistence.*;
+public enum CodigoPostal {
+    _45600("Talavera"),
+    _12345("Madrid"),
+    _67890("Barcelona");
 
-@Entity
-@Table(name = "codigo_postal")
-public class CodigoPostal {
+    private final String location;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "codigo", nullable = false, unique = true)
-    private String codigo;
-
-    // Constructor por defecto
-    public CodigoPostal() {}
-
-    // Constructor con parámetros
-    public CodigoPostal(String codigo) {
-        this.codigo = codigo;
+    CodigoPostal(String location) {
+        this.location = location;
     }
 
-    // Getters y Setters
-    public Long getId() {
-        return id;
+    public String getLocation() {
+        return location;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getCodigo() {
-        return codigo;
-    }
-
-    public void setCodigo(String codigo) {
-        this.codigo = codigo;
+    public static CodigoPostal fromCode(String code) {
+        for (CodigoPostal cp : CodigoPostal.values()) {
+            if (cp.name().substring(1).equals(code)) {
+                return cp;
+            }
+        }
+        throw new IllegalArgumentException("No enum constant for code: " + code);
     }
 }

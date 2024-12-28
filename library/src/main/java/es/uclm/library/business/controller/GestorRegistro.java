@@ -4,6 +4,8 @@ import es.uclm.library.business.service.LoginService;
 import es.uclm.library.business.entity.Usuario;
 import es.uclm.library.business.entity.Restaurante;
 import es.uclm.library.business.entity.Repartidor;
+import es.uclm.library.business.entity.Direccion;
+import es.uclm.library.business.entity.CodigoPostal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,20 +31,32 @@ public class GestorRegistro {
     public String register(@RequestParam("role") String role,
                            @RequestParam("email") String email,
                            @RequestParam("password") String password,
+                           @RequestParam(value = "nombre", required = false) String nombre,
+                           @RequestParam(value = "cif", required = false) String cif,
+                           @RequestParam(value = "calle", required = false) String calle,
+                           @RequestParam(value = "numero", required = false) String numero,
+                           @RequestParam(value = "complemento", required = false) String complemento,
+                           @RequestParam(value = "municipio", required = false) String municipio,
+                           @RequestParam(value = "codigoPostal", required = false) String codigoPostalStr,
                            Model model) {
         try {
             Usuario usuario = new Usuario();
-            usuario.setIdUsuario(email); // Assuming email is used as the user ID
+            usuario.setIdUsuario(email);
             usuario.setPass(password);
             usuario.setRol(role);
 
-            // Save the user first
             loginService.registerUsuario(usuario);
 
             switch (role) {
                 case "restaurante":
+                    CodigoPostal codigoPostal = CodigoPostal.fromCode(codigoPostalStr);
+                    Direccion direccion = new Direccion(codigoPostal, calle, numero, complemento, municipio);
                     Restaurante restaurante = new Restaurante();
                     restaurante.setUsuario(usuario);
+                    restaurante.setNombre(nombre);
+                    restaurante.setCif(cif);
+                    restaurante.setDireccion(direccion);
+
                     loginService.registerRestaurante(restaurante);
                     break;
                 case "repartidor":
@@ -62,6 +76,6 @@ public class GestorRegistro {
             logger.error("Registration error", e);
             model.addAttribute("message", "Registration failed");
         }
-        return "Registro";
+        return "redirect:/login";
     }
 }

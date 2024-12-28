@@ -24,5 +24,4 @@ public class RestauranteService {
     @Autowired
     private ItemMenuDAO itemMenuDAO;
 
-
 }

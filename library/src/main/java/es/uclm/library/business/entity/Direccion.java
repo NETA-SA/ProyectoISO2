@@ -10,14 +10,13 @@ public class Direccion {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@ManyToOne
-	@JoinColumn(name = "codigo_postal_id")
+	@Enumerated(EnumType.STRING)
+	@Column(name = "codigo_postal", nullable = false)
 	private CodigoPostal codigoPostal;
 
 	@ManyToOne
 	@JoinColumn(name = "cliente_id")
 	private Cliente cliente;
-
 
 	@Column(nullable = false)
 	private String calle;
@@ -26,8 +25,6 @@ public class Direccion {
 	private String numero;
 
 	private String complemento;
-
-	@Column(nullable = false)
 	private String municipio;
 
 	// Constructor por defecto

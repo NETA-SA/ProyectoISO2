@@ -13,17 +13,26 @@ public class LoginService {
 
     @Autowired
     private UsuarioDAO usuarioDAO;
+
     @Autowired
     private RestauranteDAO restauranteDAO;
 
     @Autowired
     private RepartidorDAO repartidorDAO;
 
+    @Autowired
+    private DireccionDAO direccionDAO;
+
     public void registerUsuario(Usuario usuario) {
         usuarioDAO.save(usuario);
     }
 
     public void registerRestaurante(Restaurante restaurante) {
+        // Save Direccion
+        Direccion direccion = restaurante.getDireccion();
+        direccionDAO.save(direccion);
+
+        // Save Restaurante
         restauranteDAO.save(restaurante);
     }
 

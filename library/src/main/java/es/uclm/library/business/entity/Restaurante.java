@@ -21,8 +21,8 @@ public class Restaurante {
 	@OneToMany(mappedBy = "restaurante")
 	private Collection<CartaMenu> cartasMenu;
 
-	@OneToOne
-	@JoinColumn(name = "direccion_id")
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "direccion_id", referencedColumnName = "id")
 	private Direccion direccion;
 
 	@Column(nullable = false)
@@ -31,10 +31,6 @@ public class Restaurante {
 	@Column(nullable = false, unique = true)
 	private String cif;
 
-	@ManyToOne
-	@JoinColumn(name = "codigo_postal_id", nullable = false)
-	private CodigoPostal codigoPostal;
-
 	@OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL)
 	private List<ItemMenu> items;
 
@@ -42,12 +38,11 @@ public class Restaurante {
 	public Restaurante() {}
 
 	// Constructor with parameters
-	public Restaurante(Usuario usuario, String nombre, String cif, Direccion direccion, CodigoPostal codigoPostal, Collection<Pedido> pedidos, Collection<CartaMenu> cartasMenu, List<ItemMenu> items) {
+	public Restaurante(Usuario usuario, String nombre, String cif, Direccion direccion, Collection<Pedido> pedidos, Collection<CartaMenu> cartasMenu, List<ItemMenu> items) {
 		this.usuario = usuario;
 		this.nombre = nombre;
 		this.cif = cif;
 		this.direccion = direccion;
-		this.codigoPostal = codigoPostal;
 		this.pedidos = pedidos;
 		this.cartasMenu = cartasMenu;
 		this.items = items;
@@ -104,14 +99,6 @@ public class Restaurante {
 
 	public void setCif(String cif) {
 		this.cif = cif;
-	}
-
-	public CodigoPostal getCodigoPostal() {
-		return codigoPostal;
-	}
-
-	public void setCodigoPostal(CodigoPostal codigoPostal) {
-		this.codigoPostal = codigoPostal;
 	}
 
 	public List<ItemMenu> getItems() {
