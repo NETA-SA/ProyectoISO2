@@ -23,4 +23,22 @@ public class GestorRestaurantes {
 	@Autowired
 	private RestauranteService restauranteService;
 
+	@GetMapping("/ListaRestaurantes")
+	public String listarRestaurantes(Model model) {
+		// Lógica para obtener listado de restaurantes de la base de datos
+		List<Restaurante> listaRestaurantes = restauranteService.obtenerTodosRestaurantes();
+
+		// Usar logger para debug
+		if (listaRestaurantes.isEmpty()) {
+			logger.info("No se encontraron restaurantes en la base de datos.");
+		} else {
+			logger.info("Restaurantes encontrados: " + listaRestaurantes.size());
+			listaRestaurantes.forEach(restaurante -> logger.info(restaurante.toString()));
+		}
+
+		model.addAttribute("restaurantes", listaRestaurantes);
+		// Enviar al template correspondiente con los datos
+		return "ListaRestaurantes";
+
+}
 }

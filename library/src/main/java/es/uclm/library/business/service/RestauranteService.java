@@ -23,5 +23,9 @@ public class RestauranteService {
 
     @Autowired
     private ItemMenuDAO itemMenuDAO;
+    
+    public List<Restaurante> obtenerTodosRestaurantes() {
+        return restauranteDAO.obtenerTodosConSQL();
+    }
 
 }
