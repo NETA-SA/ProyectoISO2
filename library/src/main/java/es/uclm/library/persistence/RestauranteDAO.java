@@ -8,8 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 @Repository
-public interface RestauranteDAO extends JpaRepository<Restaurante, Long> {
-
+public interface RestauranteDAO extends JpaRepository<Restaurante, String> {
     @Query(value = "SELECT * FROM Restaurante", nativeQuery = true)
     List<Restaurante> obtenerTodosConSQL();
 

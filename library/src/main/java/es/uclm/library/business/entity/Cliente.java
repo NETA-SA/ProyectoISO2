@@ -1,10 +1,12 @@
+// Cliente.java
 package es.uclm.library.business.entity;
 
 import jakarta.persistence.*;
 import java.util.Collection;
 
 @Entity
-public class Cliente extends Usuario {
+
+public class Cliente {
 
 	@ManyToMany
 	@JoinTable(
@@ -13,6 +15,14 @@ public class Cliente extends Usuario {
 			inverseJoinColumns = @JoinColumn(name = "restaurante_id")
 	)
 	private Collection<Restaurante> favoritos;
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+
+	@OneToOne
+	@JoinColumn(name = "idUsuario",referencedColumnName = "idUsuario", nullable = false)
+	private Usuario usuario;
 
 	@OneToMany(mappedBy = "cliente")
 	private Collection<Pedido> pedidos;
@@ -24,20 +34,17 @@ public class Cliente extends Usuario {
 	private String apellidos;
 	private String dni;
 
-	// Constructores
+	// Constructors
 	public Cliente() {}
 
-	public Cliente(String nombre, String apellidos, String dni, Collection<Restaurante> favoritos,
-				   Collection<Pedido> pedidos, Collection<Direccion> direcciones) {
+	public Cliente(Usuario usuario, String nombre, String apellidos, String dni) {
+		this.usuario = usuario;
 		this.nombre = nombre;
 		this.apellidos = apellidos;
 		this.dni = dni;
-		this.favoritos = favoritos;
-		this.pedidos = pedidos;
-		this.direcciones = direcciones;
 	}
 
-	// Getters y Setters
+	// Getters and Setters
 	public Collection<Restaurante> getFavoritos() {
 		return favoritos;
 	}

@@ -33,19 +33,21 @@ public class GestorLogin {
 	// Metodo para procesar el formulario login
 	@PostMapping
 	public String processLogin(
-            @RequestParam("idUsuario") String idUsuario,
-            @RequestParam("pass") String pass,
-            Model model) {
+			@RequestParam("idUsuario") String idUsuario,
+			@RequestParam("pass") String pass,
+			Model model) {
 
-        // Llama al servicio para autenticar el usuario
-        if (loginService.authenticate(idUsuario, pass)) {
-            logger.info("Inicio de sesión exitoso para el usuario: " + idUsuario);
-            model.addAttribute("mensaje", "Inicio de sesion exitoso");
-            return "redirect:/"; // Redirige a una página de bienvenida o de inicio
-        } else {
-            logger.warn("Inicio de sesion fallido para el usuario: " + idUsuario);
-            model.addAttribute("error", "Credenciales incorrectas, inténtalo de nuevo");
-            return "redirect:/login"; // Vuelve a mostrar el formulario de login con un mensaje de error
-        }
-    }
+		if (loginService.authenticate(idUsuario, pass)) {
+			logger.info("Inicio de sesion exitoso para el usuario: " + idUsuario);
+			Usuario usuario = loginService.findUsuarioById(idUsuario);
+			if ("cliente".equals(usuario.getRol())) {
+				return "redirect:/RealizarPedido";
+			}
+			return "redirect:/"; // Redirige a la página de bienvenida o de inicio
+		} else {
+			logger.warn("Inicio de sesion fallido para el usuario: " + idUsuario);
+			model.addAttribute("error", "Credenciales incorrectas, intentalo de nuevo");
+			return "redirect:/login"; // Vuelve a mostrar el formulario de login con un mensaje de error
+		}
+	}
 }

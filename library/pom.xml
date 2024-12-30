@@ -49,6 +49,7 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
 		<!-- Dependencia para JUnit 5 -->
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
@@ -59,6 +60,7 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>org.apache.derby</groupId>
 			<artifactId>derby</artifactId>
@@ -68,6 +70,7 @@
 			<groupId>org.apache.derby</groupId>
 			<artifactId>derbytools</artifactId>
 		</dependency>
+
 	</dependencies>
 
 	<build>

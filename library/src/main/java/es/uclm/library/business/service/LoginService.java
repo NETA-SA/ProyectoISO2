@@ -23,8 +23,15 @@ public class LoginService {
     @Autowired
     private DireccionDAO direccionDAO;
 
+    @Autowired
+    private ClienteDAO clienteDAO;
+
     public void registerUsuario(Usuario usuario) {
         usuarioDAO.save(usuario);
+    }
+
+    public  void registerCliente(Cliente cliente) {
+        clienteDAO.save(cliente);
     }
 
     public void registerRestaurante(Restaurante restaurante) {
@@ -40,6 +47,8 @@ public class LoginService {
         repartidorDAO.save(repartidor);
     }
 
+
+
     public boolean authenticate(String idUsuario, String pass) {
         Usuario usuario = usuarioDAO.findByIdUsuario(idUsuario);
 
@@ -52,4 +61,8 @@ public class LoginService {
             return false;
         }
     }
+    public Usuario findUsuarioById(String idUsuario) {
+        return usuarioDAO.findByIdUsuario(idUsuario);
+    }
+
 }

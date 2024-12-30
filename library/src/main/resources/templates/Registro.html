@@ -26,13 +26,17 @@
     <script>
         function toggleFields() {
             var role = document.getElementById("role").value;
+            var clienteFields = document.getElementById("clienteFields");
             var restauranteFields = document.getElementById("restauranteFields");
             var repartidorFields = document.getElementById("repartidorFields");
 
+            clienteFields.classList.add("hidden");
             restauranteFields.classList.add("hidden");
             repartidorFields.classList.add("hidden");
 
-            if (role === "restaurante") {
+            if (role === "cliente") {
+                clienteFields.classList.remove("hidden");
+            } else if (role === "restaurante") {
                 restauranteFields.classList.remove("hidden");
             } else if (role === "repartidor") {
                 repartidorFields.classList.remove("hidden");
@@ -51,9 +55,9 @@
         <div>
             <label for="role">Registrarse como:</label>
             <select id="role" name="role" onchange="toggleFields()">
+                <option value="cliente">Cliente</option>
                 <option value="restaurante">Restaurante</option>
                 <option value="repartidor">Repartidor</option>
-                <option value="usuario" selected>Usuario</option>
             </select>
         </div>
         <div>
@@ -64,10 +68,24 @@
             <label for="password">Contraseña:</label>
             <input type="password" id="password" name="password" required>
         </div>
+        <div id="clienteFields" class="hidden">
+            <div>
+                <label for="clienteNombre">Nombre:</label>
+                <input type="text" id="clienteNombre" name="clienteNombre">
+            </div>
+            <div>
+                <label for="apellidos">Apellidos:</label>
+                <input type="text" id="apellidos" name="apellidos">
+            </div>
+            <div>
+                <label for="dni">DNI:</label>
+                <input type="text" id="dni" name="dni">
+            </div>
+        </div>
         <div id="restauranteFields" class="hidden">
             <div>
-                <label for="nombre">Nombre:</label>
-                <input type="text" id="nombre" name="nombre">
+                <label for="restauranteNombre">Nombre:</label>
+                <input type="text" id="restauranteNombre" name="restauranteNombre">
             </div>
             <div>
                 <label for="cif">CIF:</label>

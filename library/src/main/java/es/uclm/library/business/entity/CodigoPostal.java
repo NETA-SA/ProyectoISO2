@@ -15,6 +15,10 @@ public enum CodigoPostal {
         return location;
     }
 
+    public String getCode() {
+        return name().substring(1);
+    }
+
     public static CodigoPostal fromCode(String code) {
         for (CodigoPostal cp : CodigoPostal.values()) {
             if (cp.name().substring(1).equals(code)) {
