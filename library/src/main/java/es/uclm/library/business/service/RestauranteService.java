@@ -2,9 +2,11 @@ package es.uclm.library.business.service;
 
 import es.uclm.library.business.entity.Direccion;
 import es.uclm.library.business.entity.ItemMenu;
+import es.uclm.library.business.entity.CartaMenu;
 import es.uclm.library.business.entity.Restaurante;
 import es.uclm.library.business.entity.TipoItemMenu;
 import es.uclm.library.persistence.ItemMenuDAO;
+import es.uclm.library.persistence.CartaMenuDAO;
 import es.uclm.library.persistence.RestauranteDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,5 +35,33 @@ public class RestauranteService {
 
     public void guardarRestaurante(Restaurante restaurante) {
         restauranteDAO.save(restaurante); // save del JpaRepository
+    }
+
+    @Autowired
+    private CartaMenuDAO cartaMenuDAO;
+
+    // Guardar una nueva carta
+    public CartaMenu guardarNuevaCarta(CartaMenu cartaMenu) {
+        return cartaMenuDAO.save(cartaMenu);
+    }
+
+    // Obtener una carta por su ID
+    public CartaMenu obtenerCartaPorId(Long cartaMenuId) {
+        return cartaMenuDAO.findById(cartaMenuId).orElse(null);
+    }
+
+    // Obtener todas las cartas asociadas a un restaurante
+    public List<CartaMenu> obtenerCartasPorRestaurante(Long idRestaurante) {
+        return cartaMenuDAO.findByRestauranteId(idRestaurante);
+    }
+
+    // Validar si una carta existe por nombre y restaurante
+    public boolean cartaExiste(String nombre, Long idRestaurante) {
+        return cartaMenuDAO.findByNombreAndRestauranteId(nombre, idRestaurante) != null;
+    }
+    
+    // Método para actualizar una carta
+    public void actualizarCarta(CartaMenu cartaMenu) {
+        cartaMenuDAO.save(cartaMenu); // Guardar cambios en la base de datos
     }
 }

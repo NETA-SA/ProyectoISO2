@@ -2,8 +2,10 @@ package es.uclm.library.business.controller;
 
 import es.uclm.library.business.entity.Direccion;
 import es.uclm.library.business.entity.ItemMenu;
+import es.uclm.library.business.entity.CartaMenu;
 import es.uclm.library.business.entity.Restaurante;
 import es.uclm.library.business.entity.TipoItemMenu;
+import es.uclm.library.persistence.CartaMenuDAO;
 import es.uclm.library.business.service.RestauranteService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,6 +59,8 @@ public class GestorRestaurantes {
 			HttpSession session,
 			@ModelAttribute @Valid ItemMenu itemMenu,
 			BindingResult result,
+			@RequestParam(value = "nuevaCarta", required = false) String nuevaCarta, // Campo para nueva carta
+			@RequestParam(value = "cartaMenuId", required = false) Long cartaMenuId, // Campo para seleccionar carta existente
 			Model model) {
 
 		if (result.hasErrors()) {
@@ -68,18 +72,46 @@ public class GestorRestaurantes {
 			String idUsuario = (String) session.getAttribute("idUsuario");
 			Long idRestaurante = restauranteService.obtenerIdRestaurantePorUsuario(idUsuario);
 
-			// Usa el nuevo constructor para crear un objeto Restaurante con el ID
+			// Asociar restaurante al ítem del menú
 			Restaurante restaurante = new Restaurante(idRestaurante);
-
-			// Asocia el restaurante al ítem del menú
 			itemMenu.setRestaurante(restaurante);
 
 			itemMenuDAO.save(itemMenu);
+
+
+			// Validar si es una nueva carta o una carta existente
+			if (nuevaCarta != null && !nuevaCarta.trim().isEmpty()) {
+				// Crear una nueva carta
+				CartaMenu nuevaCartaMenu = new CartaMenu();
+				nuevaCartaMenu.setNombre(nuevaCarta.trim());
+				nuevaCartaMenu.setRestaurante(restaurante);
+				nuevaCartaMenu = restauranteService.guardarNuevaCarta(nuevaCartaMenu);
+
+				// Asociar ítem del menú a la nueva carta
+				nuevaCartaMenu.getItems().add(itemMenu);
+				restauranteService.actualizarCarta(nuevaCartaMenu);
+
+			} else if (cartaMenuId != null) {
+				// Usar una carta existente
+				CartaMenu cartaSeleccionada = restauranteService.obtenerCartaPorId(cartaMenuId);
+				if (cartaSeleccionada == null || !cartaSeleccionada.getRestaurante().getId().equals(idRestaurante)) {
+					model.addAttribute("error", "Carta seleccionada inválida o no pertenece al restaurante del usuario.");
+					return "DarAltaMenu";
+				}
+
+				// Asociar ítem del menú a la carta existente
+				cartaSeleccionada.getItems().add(itemMenu);
+				restauranteService.actualizarCarta(cartaSeleccionada);
+
+			} else {
+				model.addAttribute("error", "Debes ingresar una nueva carta o seleccionar una existente.");
+				return "DarAltaMenu";
+			}
+
 			model.addAttribute("success", "Ítem agregado con éxito.");
 			return "DarAltaMenu";
 
 		} catch (Exception e) {
-			// Error al procesar la solicitud
 			model.addAttribute("error", e.getMessage());
 			return "DarAltaMenu";
 		}

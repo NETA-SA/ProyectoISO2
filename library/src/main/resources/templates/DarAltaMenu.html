@@ -18,6 +18,23 @@
         <p th:text="${error}"></p>
     </div>
 
+    <!-- Campo para nueva carta -->
+    <div>
+        <label for="nuevaCarta">Nueva Carta:</label>
+        <input type="text" id="nuevaCarta" name="nuevaCarta" placeholder="Ingrese el nombre de la nueva carta..." />
+    </div>
+
+    <!-- Campo para seleccionar carta existente -->
+    <div>
+        <label for="cartaMenu">Seleccionar Carta:</label>
+        <select id="cartaMenu" name="cartaMenuId">
+            <option value="" disabled selected>Seleccione una carta existente...</option>
+            <option th:each="carta : ${cartasMenu}"
+                    th:value="${carta.id}"
+                    th:text="${carta.nombre}"></option>
+        </select>
+    </div>
+
     <!-- Formulario de Ítem del Menú -->
     <div>
         <label for="tipo">Tipo:</label>
