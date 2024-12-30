@@ -76,6 +76,6 @@ public class GestorRegistro {
             logger.error("Registration error", e);
             model.addAttribute("message", "Registration failed");
         }
-        return "redirect:/login";
+        return "redirect:/";
     }
 }
