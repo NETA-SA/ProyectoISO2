@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import es.uclm.library.business.entity.Login;
 import es.uclm.library.business.entity.Usuario;
+import jakarta.servlet.http.HttpSession;
 
 
 @Controller
@@ -35,17 +36,24 @@ public class GestorLogin {
 	public String processLogin(
             @RequestParam("idUsuario") String idUsuario,
             @RequestParam("pass") String pass,
-            Model model) {
+            Model model,
+			HttpSession session) { // Inyectamos la sesión, HAY QUE RECUPERARLA
 
-        // Llama al servicio para autenticar el usuario
-        if (loginService.authenticate(idUsuario, pass)) {
-            logger.info("Inicio de sesión exitoso para el usuario: " + idUsuario);
-            model.addAttribute("mensaje", "Inicio de sesion exitoso");
-            return "redirect:/"; // Redirige a una página de bienvenida o de inicio
-        } else {
-            logger.warn("Inicio de sesion fallido para el usuario: " + idUsuario);
-            model.addAttribute("error", "Credenciales incorrectas, inténtalo de nuevo");
-            return "redirect:/login"; // Vuelve a mostrar el formulario de login con un mensaje de error
-        }
+		if (loginService.authenticate(idUsuario, pass)) {
+			session.setAttribute("idUsuario", idUsuario); // Guardas el idUsuario en la sesión
+			Usuario usuario = loginService.obtenerUsuarioPorId(idUsuario);
+			logger.info("Inicio de sesión exitoso para el usuario: " + idUsuario);
+			model.addAttribute("mensaje", "Inicio de sesion exitoso");
+
+			if ("restaurante".equals(usuario.getRol())) {
+				return "redirect:/restaurantes/RestaurantesPag";
+			} else {
+				return "redirect:/";
+			}
+		} else {
+			logger.warn("Inicio de sesion fallido para el usuario: " + idUsuario);
+			model.addAttribute("error", "Credenciales incorrectas, inténtalo de nuevo");
+			return "redirect:/login";
+		}
     }
 }

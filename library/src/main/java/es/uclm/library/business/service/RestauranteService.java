@@ -16,16 +16,22 @@ import java.util.List;
 @Service
 public class RestauranteService {
 
-    private static final Logger logger = LoggerFactory.getLogger(RestauranteService.class);
-
     @Autowired
     private RestauranteDAO restauranteDAO;
 
-    @Autowired
-    private ItemMenuDAO itemMenuDAO;
-    
     public List<Restaurante> obtenerTodosRestaurantes() {
         return restauranteDAO.obtenerTodosConSQL();
     }
 
+    public Long obtenerIdRestaurantePorUsuario (String idUsuario) {
+        Long idRestaurante = restauranteDAO.obtenerIdRestaurantePorUsuario(idUsuario);
+        if (idRestaurante == null) {
+            throw new RuntimeException("No se pudo encontrar un restaurante para el usuario especificado.");
+        }
+        return idRestaurante;
+    }
+
+    public void guardarRestaurante(Restaurante restaurante) {
+        restauranteDAO.save(restaurante); // save del JpaRepository
+    }
 }

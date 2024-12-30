@@ -37,6 +37,11 @@ public class Restaurante {
 	// Default constructor
 	public Restaurante() {}
 
+	// Simple constructor
+	public Restaurante(Long id) {
+		this.id = id;
+	}
+
 	// Constructor with parameters
 	public Restaurante(Usuario usuario, String nombre, String cif, Direccion direccion, Collection<Pedido> pedidos, Collection<CartaMenu> cartasMenu, List<ItemMenu> items) {
 		this.usuario = usuario;

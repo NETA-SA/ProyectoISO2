@@ -52,4 +52,7 @@ public class LoginService {
             return false;
         }
     }
+    public Usuario obtenerUsuarioPorId(String idUsuario) {
+        return usuarioDAO.findByIdUsuario(idUsuario);
+    }
 }
