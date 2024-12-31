@@ -49,8 +49,20 @@ public class GestorRestaurantes {
 
 
 	@GetMapping("/DarAltaMenu")
-	public String mostrarFormularioAltaMenu(Model model) {
+	public String mostrarFormularioAltaMenu(HttpSession session, Model model) {
+		// Obtener el ID del restaurante del usuario desde la sesión
+		String idUsuario = (String) session.getAttribute("idUsuario");
+		Long idRestaurante = restauranteService.obtenerIdRestaurantePorUsuario(idUsuario);
+
+		// Obtener las cartas asociadas al restaurante
+		List<CartaMenu> cartasMenu = restauranteService.obtenerCartasPorRestaurante(idRestaurante);
+
+		// Pasar las cartas al modelo para Thymeleaf
+		model.addAttribute("cartasMenu", cartasMenu);
+
+		// Crear un nuevo ItemMenu para vincular al formulario
 		model.addAttribute("itemMenu", new ItemMenu());
+
 		return "DarAltaMenu";
 	}
 
@@ -79,6 +91,18 @@ public class GestorRestaurantes {
 			itemMenuDAO.save(itemMenu);
 
 
+			// Manejo de errores en la validación
+			if (result.hasErrors()) {
+				// Si hay errores, volver a cargar las cartas existentes
+				List<CartaMenu> cartasMenu = restauranteService.obtenerCartasPorRestaurante(idRestaurante);
+				model.addAttribute("cartasMenu", cartasMenu);
+
+				return "DarAltaMenu"; // Vuelve a la misma página con errores
+			}
+
+			// Crear o buscar la carta relacionada
+			CartaMenu cartaSeleccionada = null;
+
 			// Validar si es una nueva carta o una carta existente
 			if (nuevaCarta != null && !nuevaCarta.trim().isEmpty()) {
 				// Crear una nueva carta
@@ -91,9 +115,20 @@ public class GestorRestaurantes {
 				nuevaCartaMenu.getItems().add(itemMenu);
 				restauranteService.actualizarCarta(nuevaCartaMenu);
 
+				// Crear una nueva carta si se ingresó su nombre
+				if (!restauranteService.cartaExiste(nuevaCarta, idRestaurante)) {
+					cartaSeleccionada = new CartaMenu();
+					cartaSeleccionada.setNombre(nuevaCarta);
+					cartaSeleccionada.setRestaurante(new Restaurante(idRestaurante));
+
+					cartaSeleccionada = restauranteService.guardarNuevaCarta(cartaSeleccionada);
+				} //else {
+					//model.addAttribute("error", "La carta ya existe.");
+				//}
+
 			} else if (cartaMenuId != null) {
 				// Usar una carta existente
-				CartaMenu cartaSeleccionada = restauranteService.obtenerCartaPorId(cartaMenuId);
+				cartaSeleccionada = restauranteService.obtenerCartaPorId(cartaMenuId);
 				if (cartaSeleccionada == null || !cartaSeleccionada.getRestaurante().getId().equals(idRestaurante)) {
 					model.addAttribute("error", "Carta seleccionada inválida o no pertenece al restaurante del usuario.");
 					return "DarAltaMenu";
@@ -107,6 +142,10 @@ public class GestorRestaurantes {
 				model.addAttribute("error", "Debes ingresar una nueva carta o seleccionar una existente.");
 				return "DarAltaMenu";
 			}
+
+			// Recargar las cartas existentes y añadirlas al modelo para la vista
+			List<CartaMenu> cartasMenu = restauranteService.obtenerCartasPorRestaurante(idRestaurante);
+			model.addAttribute("cartasMenu", cartasMenu);
 
 			model.addAttribute("success", "Ítem agregado con éxito.");
 			return "DarAltaMenu";
