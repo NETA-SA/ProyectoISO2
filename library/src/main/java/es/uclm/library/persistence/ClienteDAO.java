@@ -9,4 +9,5 @@ import java.util.List;
 
 @Repository
 public interface ClienteDAO extends JpaRepository<Cliente, String> {
+    Cliente findByUsuario(Usuario usuario);
 }

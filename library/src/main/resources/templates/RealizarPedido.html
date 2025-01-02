@@ -35,6 +35,19 @@
       background-color: #f2f2f2;
     }
   </style>
+  <script>
+    function toggleFavorito(restauranteId, isChecked) {
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", "/RealizarPedido/toggleFavorito", true);
+      xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          console.log(xhr.responseText);
+        }
+      };
+      xhr.send("restauranteId=" + restauranteId + "&isChecked=" + isChecked);
+    }
+  </script>
 </head>
 <body>
 <h1>Realizar Pedido</h1>
@@ -55,6 +68,7 @@
       <th>Complemento</th>
       <th>Municipio</th>
       <th>Código Postal</th>
+      <th>Favorito</th>
     </tr>
     </thead>
     <tbody>
@@ -65,6 +79,10 @@
       <td th:text="${restaurante.direccion.complemento}">Complemento</td>
       <td th:text="${restaurante.direccion.municipio}">Municipio</td>
       <td th:text="${restaurante.direccion.codigoPostal.code}">Código Postal</td>
+      <td>
+        <input type="checkbox" th:checked="${#lists.contains(cliente.favoritos, restaurante)}"
+               th:value="${restaurante.id}" onchange="toggleFavorito(this.value, this.checked)">
+      </td>
     </tr>
     </tbody>
   </table>

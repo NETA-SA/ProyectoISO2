@@ -65,4 +65,11 @@ public class LoginService {
         return usuarioDAO.findByIdUsuario(idUsuario);
     }
 
+    public Cliente findClienteByUsuario(Usuario usuario) {
+        return clienteDAO.findByUsuario(usuario);
+    }
+
+    public void updateCliente(Cliente cliente) {
+        clienteDAO.save(cliente);
+    }
 }

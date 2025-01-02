@@ -1,6 +1,7 @@
 package es.uclm.library.business.controller;
 
 import es.uclm.library.business.service.LoginService;
+import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,15 +32,18 @@ public class GestorLogin {
 	}
 
 	// Metodo para procesar el formulario login
+	// GestorLogin.java
 	@PostMapping
 	public String processLogin(
 			@RequestParam("idUsuario") String idUsuario,
 			@RequestParam("pass") String pass,
+			HttpSession session,
 			Model model) {
 
 		if (loginService.authenticate(idUsuario, pass)) {
 			logger.info("Inicio de sesion exitoso para el usuario: " + idUsuario);
 			Usuario usuario = loginService.findUsuarioById(idUsuario);
+			session.setAttribute("email", idUsuario);
 			if ("cliente".equals(usuario.getRol())) {
 				return "redirect:/RealizarPedido";
 			}
