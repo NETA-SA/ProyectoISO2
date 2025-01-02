@@ -1,6 +1,7 @@
 package es.uclm.library.business.entity;
 
 import jakarta.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
 
 @Entity
@@ -17,16 +18,18 @@ public class CartaMenu {
 
 	@OneToMany
 	@JoinColumn(name = "carta_menu_id")
-	private Collection<ItemMenu> items;
+	private Collection<ItemMenu> items = new ArrayList<>(); // Inicialización aquí
 
 	private String nombre;
 
 	// Constructores
-	public CartaMenu() {}
+	public CartaMenu() {
+		this.items = new ArrayList<>(); // Inicialización en el constructor predeterminado
+	}
 
 	public CartaMenu(Restaurante restaurante, Collection<ItemMenu> items, String nombre) {
 		this.restaurante = restaurante;
-		this.items = items;
+		this.items = (items != null) ? items : new ArrayList<>(); // Validación si se pasa null
 		this.nombre = nombre;
 	}
 
