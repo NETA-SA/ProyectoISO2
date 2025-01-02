@@ -172,8 +172,86 @@ public class GestorRestaurantes {
 		model.addAttribute("restaurantes", listaRestaurantes);
 		// Enviar al template correspondiente con los datos
 		return "ListaRestaurantes";
-
-
-
 	}
+
+	@GetMapping("/verCartas")
+	public String mostrarCartas(HttpSession session, Model model) {
+		String idUsuario = (String) session.getAttribute("idUsuario");
+		Long idRestaurante = restauranteService.obtenerIdRestaurantePorUsuario(idUsuario);
+
+		List<CartaMenu> cartasMenu = restauranteService.obtenerCartasPorRestaurante(idRestaurante);
+		model.addAttribute("cartasMenu", cartasMenu);
+		return "verCartas"; // Nombre de la nueva vista que crearemos
+	}
+
+	@GetMapping("/verItems")
+	public String mostrarItems(@RequestParam("cartaId") Long cartaId, Model model) {
+		CartaMenu carta = restauranteService.obtenerCartaPorId(cartaId);
+		if (carta == null) {
+			model.addAttribute("error", "Carta no encontrada.");
+			return "error"; // Vista de error (si no existe o no corresponde al restaurante del usuario)
+		}
+
+		model.addAttribute("items", carta.getItems());
+		model.addAttribute("cartaId", cartaId);
+		return "verItems"; // Nombre de la nueva vista que crearemos
+	}
+
+	@GetMapping("/editarItem")
+	public String editarItem(@RequestParam("itemId") Long itemId, @RequestParam("cartaId") Long cartaId, Model model) {
+		ItemMenu item = itemMenuDAO.findById(itemId).orElse(null);
+		if (item == null) {
+			model.addAttribute("error", "Item no encontrado.");
+			return "error";
+		}
+
+		List<CartaMenu> cartasMenu = restauranteService.obtenerCartasPorRestaurante(item.getRestaurante().getId());
+		model.addAttribute("item", item);
+		model.addAttribute("cartasMenu", cartasMenu);
+		model.addAttribute("cartaId", cartaId);
+		return "editarItem"; // Nueva vista
+	}
+
+	@PostMapping("/guardarEdicionItem")
+	public String guardarEdicionItem(
+			HttpSession session,
+			@ModelAttribute @Valid ItemMenu itemMenu,
+			BindingResult result,
+			@RequestParam("nuevaCartaId") Long nuevaCartaId,
+			Model model) {
+
+		String idUsuario = (String) session.getAttribute("idUsuario");
+		Long idRestaurante = restauranteService.obtenerIdRestaurantePorUsuario(idUsuario);
+
+		// Verificar errores en los datos del formulario
+		if (result.hasErrors()) {
+			model.addAttribute("error", "Error en la edición del ítem.");
+			model.addAttribute("cartasMenu", restauranteService.obtenerCartasPorRestaurante(idRestaurante)); // Recargar cartas
+			model.addAttribute("item", itemMenu); // Volver a cargar el ítem
+			return "editarItem";
+		}
+
+		// Recuperar la carta asociada
+		CartaMenu nuevaCarta = restauranteService.obtenerCartaPorId(nuevaCartaId);
+		if (nuevaCarta == null) {
+			model.addAttribute("error", "Carta no encontrada.");
+			model.addAttribute("cartasMenu", restauranteService.obtenerCartasPorRestaurante(idRestaurante)); // Recargar cartas
+			model.addAttribute("item", itemMenu); // Volver a cargar el ítem
+			return "editarItem";
+		}
+
+		itemMenu.setRestaurante(nuevaCarta.getRestaurante());
+
+		// Guardar el ítem actualizado
+		itemMenuDAO.save(itemMenu);
+
+		// Actualizar la carta en la base de datos (si es necesario)
+		nuevaCarta.getItems().add(itemMenu);
+		restauranteService.actualizarCarta(nuevaCarta);
+
+		// Redirigir con mensaje de éxito
+		model.addAttribute("success", "Ítem editado correctamente.");
+		return "RestaurantesPag";
+	}
+
 }

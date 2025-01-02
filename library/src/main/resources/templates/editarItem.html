@@ -1,0 +1,39 @@
+<!DOCTYPE HTML>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <title>Editar Ítem</title>
+</head>
+<body>
+<h1>Editar Ítem</h1>
+<form th:action="@{/restaurantes/guardarEdicionItem}" th:object="${item}" method="post">
+    <!-- Campo oculto para el ID del ítem -->
+    <input type="hidden" name="id" th:value="${item.id}" />
+
+    <div>
+        <label for="tipo">Tipo:</label>
+        <select th:field="*{tipo}">
+            <option value="PRIMER_PLATO">Primer Plato</option>
+            <option value="SEGUNDO_PLATO">Segundo Plato</option>
+            <option value="POSTRE">Postre</option>
+            <option value="BEBIDA">Bebida</option>
+        </select>
+    </div>
+
+    <label for="nombre">Nombre:</label>
+    <input type="text" id="nombre" name="nombre" th:value="${item.nombre}" required/>
+
+    <label for="precio">Precio:</label>
+    <input type="number" id="precio" name="precio" th:value="${item.precio}" required/>
+
+    <label for="nuevaCartaId">Cambiar la carta:</label>
+    <select id="nuevaCartaId" name="nuevaCartaId">
+        <option th:each="carta : ${cartasMenu}" th:value="${carta.id}" th:text="${carta.nombre}"></option>
+    </select>
+
+    <button type="submit">Guardar</button>
+</form>
+<a th:href="@{/restaurantes/verItems(cartaId=${cartaId})}">
+    <button type="button">Cancelar</button>
+</a>
+</body>
+</html>

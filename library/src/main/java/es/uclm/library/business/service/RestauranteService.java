@@ -39,6 +39,7 @@ public class RestauranteService {
 
     @Autowired
     private CartaMenuDAO cartaMenuDAO;
+    private ItemMenuDAO itemMenuDAO;
 
     // Guardar una nueva carta
     public CartaMenu guardarNuevaCarta(CartaMenu cartaMenu) {
@@ -48,6 +49,11 @@ public class RestauranteService {
     // Obtener una carta por su ID
     public CartaMenu obtenerCartaPorId(Long cartaMenuId) {
         return cartaMenuDAO.findById(cartaMenuId).orElse(null);
+    }
+
+    // Obtener una carta por su ID
+    public ItemMenu obtenerItemPorId(Long itemMenuId) {
+        return itemMenuDAO.findById(itemMenuId).orElse(null);
     }
 
     // Obtener todas las cartas asociadas a un restaurante
