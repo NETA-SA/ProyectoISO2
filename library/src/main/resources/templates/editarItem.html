@@ -22,8 +22,10 @@
     <label for="nombre">Nombre:</label>
     <input type="text" id="nombre" name="nombre" th:value="${item.nombre}" required/>
 
-    <label for="precio">Precio:</label>
-    <input type="number" id="precio" name="precio" th:value="${item.precio}" required/>
+    <div>
+        <label for="precio">Precio:</label>
+        <input type="number" step="0.01" id="precio" th:field="*{precio}"  required />
+    </div>
 
     <label for="nuevaCartaId">Cambiar la carta:</label>
     <select id="nuevaCartaId" name="nuevaCartaId">
