@@ -1,0 +1,18 @@
+<!DOCTYPE HTML>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <title>Cartas del Restaurante</title>
+</head>
+<body>
+<h1>Cartas disponibles</h1>
+<ul>
+    <li th:each="carta : ${cartasMenu}">
+        <span th:text="${carta.nombre}"></span>
+        <a th:href="@{/restaurantes/verItems(cartaId=${carta.id})}">
+            <button type="button">Ver Items</button>
+        </a>
+    </li>
+</ul>
+<button onclick="location.href='/restaurantes/RestaurantesPag'">Volver</button>
+</body>
+</html>
