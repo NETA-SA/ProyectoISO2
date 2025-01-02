@@ -46,8 +46,18 @@ public class GestorLogin {
 			session.setAttribute("email", idUsuario);
 			if ("cliente".equals(usuario.getRol())) {
 				return "redirect:/RealizarPedido";
+			}else {
+				if ("restaurante".equals(usuario.getRol())) {
+					logger.info("inicio como restaurante exitoso");
+					return "redirect:/restaurantes/RestaurantesPag";
+				}else {
+					if ("repartidor".equals(usuario.getRol())) {
+						return "redirect:/repartidores/RepartidoresPag";
+					}else {
+						return "redirect:/";
+					}
+				}
 			}
-			return "redirect:/"; // Redirige a la página de bienvenida o de inicio
 		} else {
 			logger.warn("Inicio de sesion fallido para el usuario: " + idUsuario);
 			model.addAttribute("error", "Credenciales incorrectas, intentalo de nuevo");

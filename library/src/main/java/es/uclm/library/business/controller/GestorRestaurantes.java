@@ -14,9 +14,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import es.uclm.library.persistence.ItemMenuDAO;
-import jakarta.validation.Valid; // Usar Jakarta en lugar de javax (según las dependencias).
 import org.springframework.validation.BindingResult;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -34,7 +34,7 @@ public class GestorRestaurantes {
 
 	@GetMapping("/RestaurantesPag")
 	public String mostrarPaginaRestaurantes(HttpSession session, Model model) {
-		String idUsuario = (String) session.getAttribute("idUsuario");
+		String idUsuario = (String) session.getAttribute("email");
 
 		if (idUsuario == null) {
 			model.addAttribute("error", "Usuario no autenticado.");
@@ -47,11 +47,27 @@ public class GestorRestaurantes {
 		return "RestaurantesPag";
 	}
 
+	@GetMapping("/RestaurantePedido")
+	public String mostrarRestaurantePedido(@RequestParam("restauranteId") Long restauranteId, @RequestParam(value = "cartaId", required = false) Long cartaId, Model model) {
+		List<CartaMenu> cartasMenu = restauranteService.obtenerCartasPorRestaurante(restauranteId);
+		model.addAttribute("cartasMenu", cartasMenu);
+		model.addAttribute("restauranteId", restauranteId);
+
+
+		if (cartaId != null) {
+			CartaMenu carta = restauranteService.obtenerCartaPorId(cartaId);
+			model.addAttribute("items", carta.getItems());
+			model.addAttribute("selectedCartaId", cartaId);
+		}
+
+		return "RestaurantePedido";
+	}
+
 
 	@GetMapping("/DarAltaMenu")
 	public String mostrarFormularioAltaMenu(HttpSession session, Model model) {
 		// Obtener el ID del restaurante del usuario desde la sesión
-		String idUsuario = (String) session.getAttribute("idUsuario");
+		String idUsuario = (String) session.getAttribute("email");
 		Long idRestaurante = restauranteService.obtenerIdRestaurantePorUsuario(idUsuario);
 
 		// Obtener las cartas asociadas al restaurante
@@ -81,7 +97,7 @@ public class GestorRestaurantes {
 		}
 
 		try {
-			String idUsuario = (String) session.getAttribute("idUsuario");
+			String idUsuario = (String) session.getAttribute("email");
 			Long idRestaurante = restauranteService.obtenerIdRestaurantePorUsuario(idUsuario);
 
 			// Asociar restaurante al ítem del menú
@@ -176,7 +192,7 @@ public class GestorRestaurantes {
 
 	@GetMapping("/verCartas")
 	public String mostrarCartas(HttpSession session, Model model) {
-		String idUsuario = (String) session.getAttribute("idUsuario");
+		String idUsuario = (String) session.getAttribute("email");
 		Long idRestaurante = restauranteService.obtenerIdRestaurantePorUsuario(idUsuario);
 
 		List<CartaMenu> cartasMenu = restauranteService.obtenerCartasPorRestaurante(idRestaurante);
@@ -220,7 +236,7 @@ public class GestorRestaurantes {
 			@RequestParam("nuevaCartaId") Long nuevaCartaId,
 			Model model) {
 
-		String idUsuario = (String) session.getAttribute("idUsuario");
+		String idUsuario = (String) session.getAttribute("email");
 		Long idRestaurante = restauranteService.obtenerIdRestaurantePorUsuario(idUsuario);
 
 		// Verificar errores en los datos del formulario

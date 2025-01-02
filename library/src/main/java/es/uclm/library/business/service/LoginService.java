@@ -47,8 +47,6 @@ public class LoginService {
         repartidorDAO.save(repartidor);
     }
 
-
-
     public boolean authenticate(String idUsuario, String pass) {
         Usuario usuario = usuarioDAO.findByIdUsuario(idUsuario);
 

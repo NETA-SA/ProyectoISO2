@@ -73,7 +73,11 @@
     </thead>
     <tbody>
     <tr th:each="restaurante : ${restaurantes}">
-      <td th:text="${restaurante.nombre}">Nombre</td>
+      <td>
+        <a th:href="@{/restaurantes/RestaurantePedido(restauranteId=${restaurante.id})}">
+          <span th:text="${restaurante.nombre}">Nombre</span>
+        </a>
+      </td>
       <td th:text="${restaurante.direccion.calle}">Calle</td>
       <td th:text="${restaurante.direccion.numero}">Número</td>
       <td th:text="${restaurante.direccion.complemento}">Complemento</td>

@@ -1,0 +1,27 @@
+<!DOCTYPE HTML>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <title>Restaurante Pedido</title>
+</head>
+<body>
+<h1>Cartas del Restaurante</h1>
+<ul>
+    <li th:each="carta : ${cartasMenu}">
+        <a th:href="@{/restaurantes/RestaurantePedido(restauranteId=${restauranteId}, cartaId=${carta.id})}">
+            <span th:text="${carta.nombre}"></span>
+        </a>
+    </li>
+</ul>
+
+<div th:if="${items != null}">
+    <h2>Items de la Carta</h2>
+    <ul>
+        <li th:each="item : ${items}">
+            <span th:text="${item.nombre}"></span> - <span th:text="${item.precio}"></span>
+        </li>
+    </ul>
+</div>
+
+<button onclick="location.href='/RealizarPedido'">Volver</button>
+</body>
+</html>
