@@ -22,7 +22,7 @@ public class Pedido {
 
 	@OneToMany
 	@JoinColumn(name = "pedido_id")
-	private Collection<ItemMenu> items;
+	private Collection<ItemPedido> items;
 
 	@ManyToOne
 	@JoinColumn(name = "restaurante_id", nullable = false)
@@ -43,7 +43,7 @@ public class Pedido {
 	// Constructores
 	public Pedido() {}
 
-	public Pedido(Cliente cliente, Pago pago, Collection<ItemMenu> items, Restaurante restaurante, ServicioEntrega entrega, EstadoPedido estado, Date fecha) {
+	public Pedido(Cliente cliente, Pago pago, Collection<ItemPedido> items, Restaurante restaurante, ServicioEntrega entrega, EstadoPedido estado, Date fecha) {
 		this.cliente = cliente;
 		this.pago = pago;
 		this.items = items;
@@ -52,7 +52,6 @@ public class Pedido {
 		this.estado = estado;
 		this.fecha = fecha;
 	}
-
 
 	// Getters y Setters
 	public Long getId() {
@@ -79,11 +78,11 @@ public class Pedido {
 		this.pago = pago;
 	}
 
-	public Collection<ItemMenu> getItems() {
+	public Collection<ItemPedido> getItems() {
 		return items;
 	}
 
-	public void setItems(Collection<ItemMenu> items) {
+	public void setItems(Collection<ItemPedido> items) {
 		this.items = items;
 	}
 
@@ -120,11 +119,11 @@ public class Pedido {
 	}
 
 	// Métodos para añadir y eliminar ítems
-	public void addItem(ItemMenu itemMenu) {
-		this.items.add(itemMenu);
+	public void addItem(ItemPedido itemPedido) {
+		this.items.add(itemPedido);
 	}
 
-	public void deleteItem(ItemMenu itemMenu) {
-		this.items.remove(itemMenu);
+	public void deleteItem(ItemPedido itemPedido) {
+		this.items.remove(itemPedido);
 	}
 }

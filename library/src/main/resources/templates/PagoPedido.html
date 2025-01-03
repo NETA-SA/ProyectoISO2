@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Pago del Pedido</title>
+</head>
+<body>
+<h1>Pago del Pedido</h1>
+<div>
+  <h2>Datos del Cliente</h2>
+  <p th:text="'Nombre: ' + ${cliente.nombre}"></p>
+  <p th:text="'Email: ' + ${cliente.email}"></p>
+  <h2>Dirección</h2>
+  <form th:action="@{/RealizarPedido/PagoPedido/realizarPago}" method="post">
+    <input type="hidden" name="pedidoId" th:value="${pedido.id}" />
+    <label for="calle">Calle:</label>
+    <input type="text" id="calle" name="calle" required /><br/>
+    <label for="numero">Número:</label>
+    <input type="text" id="numero" name="numero" required /><br/>
+    <label for="complemento">Complemento:</label>
+    <input type="text" id="complemento" name="complemento" /><br/>
+    <label for="municipio">Municipio:</label>
+    <input type="text" id="municipio" name="municipio" required /><br/>
+    <label for="codigoPostal">Código Postal:</label>
+    <input type="text" id="codigoPostal" name="codigoPostal" required /><br/>
+    <h2>Método de Pago</h2>
+    <select name="metodoPago" required>
+      <option value="PAYPAL">PayPal</option>
+      <option value="MasterCard">MasterCard</option>
+      <option value="Visa">Visa</option>
+    </select><br/>
+    <button type="submit">Realizar Pago</button>
+  </form>
+  <form th:action="@{/RealizarPedido/RestaurantePedido}" method="get">
+    <input type="hidden" name="restauranteId" th:value="${restaurante.id}" />
+    <button type="submit">Cancelar Pago</button>
+  </form>
+</div>
+<div>
+  <h2>Items del Pedido</h2>
+  <ul>
+    <li th:each="item : ${pedido.items}" th:text="${item.nombre} + ' - ' + ${item.cantidad} + ' x ' + ${item.precio}"></li>
+  </ul>
+</div>
+<div>
+  <h2>Datos del Restaurante</h2>
+  <p th:text="'Nombre: ' + ${restaurante.nombre}"></p>
+  <p th:text="'Dirección: ' + ${restaurante.direccion.calle} + ', ' + ${restaurante.direccion.numero} + ', ' + ${restaurante.direccion.complemento} + ', ' + ${restaurante.direccion.municipio} + ', ' + ${restaurante.direccion.codigoPostal.code}"></p>
+</div>
+</body>
+</html>

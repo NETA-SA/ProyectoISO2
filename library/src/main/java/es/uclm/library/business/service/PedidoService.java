@@ -6,11 +6,8 @@ import es.uclm.library.business.entity.ItemMenu;
 import es.uclm.library.business.entity.Pedido;
 import es.uclm.library.business.entity.Restaurante;
 import es.uclm.library.business.entity.ServicioEntrega;
-import es.uclm.library.persistence.ClienteDAO;
-import es.uclm.library.persistence.ItemMenuDAO;
-import es.uclm.library.persistence.PedidoDAO;
-import es.uclm.library.persistence.RestauranteDAO;
-import es.uclm.library.persistence.ServicioEntregaDAO;
+import es.uclm.library.business.entity.Pago;
+import es.uclm.library.persistence.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,8 +35,26 @@ public class PedidoService {
     @Autowired
     private ItemMenuDAO itemMenuDAO;
 
+    @Autowired
+    private ItemPedidoDAO itemPedidoDAO;
+
+    @Autowired
+    private PagoDAO pagoDAO;
+
+
     public void crearPedido(Pedido pedido) {
         pedidoDAO.save(pedido);
     }
 
+    public void actualizarPedido(Pedido pedido) {
+        pedidoDAO.save(pedido);
+    }
+
+    public Pedido obtenerPedidoPorId(Long pedidoId) {
+        return pedidoDAO.findById(pedidoId).orElse(null);
+    }
+
+    public Pago guardarPago(Pago pago) {
+        return pagoDAO.save(pago);
+    }
 }

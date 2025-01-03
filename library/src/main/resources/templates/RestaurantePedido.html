@@ -58,7 +58,7 @@
             <span th:text="${item.nombre}"></span> - <span th:text="${item.precio}"></span> - Cantidad: <span th:text="${item.cantidad}"></span>
         </li>
     </ul>
-    <p>Total: <span th:text="${total}"></span></p>
+    <p>Total: <span th:text="${#numbers.formatDecimal(total, 2, 2)}"></span></p>
 </div>
 
 <form th:action="@{/RealizarPedido/RestaurantePedido/realizarPedido}" method="post">

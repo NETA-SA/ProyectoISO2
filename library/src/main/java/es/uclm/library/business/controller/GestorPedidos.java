@@ -4,6 +4,7 @@ import es.uclm.library.business.entity.*;
 import es.uclm.library.business.service.PedidoService;
 import es.uclm.library.business.service.RestauranteService;
 import es.uclm.library.business.service.LoginService;
+import es.uclm.library.persistence.ItemPedidoDAO;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.servlet.http.HttpSession;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Controller
@@ -34,33 +36,44 @@ public class GestorPedidos {
 	@Autowired
 	private LoginService loginService;
 
+	@Autowired
+	private ItemPedidoDAO itemPedidoDAO;
+
 	@PersistenceContext
 	private EntityManager entityManager;
 
+	/* ###########################################################
+	 * #                         Bloque 1                        #
+	 * ###########################################################
+	 * Parte encargada de iniciar la lista de items para el pedido y calcular las frecuencias de los items para que se muestren en la vista.
+	 * Esto se hace debido a que la vista es dinámica y se actualiza cada vez que se añade o elimina un item del pedido.
+	 */
+
 	@ModelAttribute("pedidoItems")
-	public List<ItemMenu> createPedidoItems() {
+	public List<ItemPedido> createPedidoItems() {
 		return new ArrayList<>();
 	}
 
 	@ModelAttribute("itemFrequencies")
-	public List<ItemFrequency> calculateItemFrequencies(@ModelAttribute("pedidoItems") List<ItemMenu> pedidoItems) {
+	public List<ItemFrequency> calculateItemFrequencies(@ModelAttribute("pedidoItems") List<ItemPedido> pedidoItems) {
 		return pedidoItems.stream()
-				.collect(Collectors.groupingBy(ItemMenu::getId, Collectors.counting()))
+				.filter(item -> item.getId() != null) // Filter out items with null IDs
+				.collect(Collectors.groupingBy(ItemPedido::getId, Collectors.counting()))
 				.entrySet().stream()
-				.map(entry -> new ItemFrequency(restauranteService.obtenerItemPorId(entry.getKey()), entry.getValue()))
+				.map(entry -> new ItemFrequency(itemPedidoDAO.findById(entry.getKey()).orElse(null), entry.getValue()))
 				.collect(Collectors.toList());
 	}
 
 	public static class ItemFrequency {
-		private final ItemMenu item;
+		private final ItemPedido item;
 		private final long frequency;
 
-		public ItemFrequency(ItemMenu item, long frequency) {
+		public ItemFrequency(ItemPedido item, long frequency) {
 			this.item = item;
 			this.frequency = frequency;
 		}
 
-		public ItemMenu getItem() {
+		public ItemPedido getItem() {
 			return item;
 		}
 
@@ -69,6 +82,12 @@ public class GestorPedidos {
 		}
 	}
 
+	/* ###########################################################
+	 * #                         Bloque 2                     #
+	 * ###########################################################
+	 * Parte encargada de cargar las cartas de un restaurante en la vista y de mostrar los items de una carta en la vista, asi como de añadir y eliminar items del pedido.
+	 * Tambien se encarga de listar los restaurantes.
+	 */
 	@GetMapping("/cartas")
 	public String cargarCartas(@RequestParam("restauranteId") Long restauranteId, Model model) {
 		List<CartaMenu> cartasMenu = restauranteService.obtenerCartasPorRestaurante(restauranteId);
@@ -84,12 +103,26 @@ public class GestorPedidos {
 	@GetMapping("/ListaRestaurantes")
 	public String listarRestaurantes(Model model, HttpSession session) {
 		String email = (String) session.getAttribute("email");
+		List<Restaurante> restaurantes;
+		Cliente cliente = null;
+
 		if (email != null) {
 			Usuario usuario = loginService.findUsuarioById(email);
-			Cliente cliente = loginService.findClienteByUsuario(usuario);
+			cliente = loginService.findClienteByUsuario(usuario);
 			model.addAttribute("cliente", cliente);
 		}
-		List<Restaurante> restaurantes = restauranteService.obtenerTodosRestaurantes();
+
+		if (cliente != null) {
+			List<Restaurante> favoritos = new ArrayList<>(cliente.getFavoritos());
+			List<Restaurante> noFavoritos = restauranteService.obtenerTodosRestaurantes().stream()
+					.filter(restaurante -> !favoritos.contains(restaurante))
+					.collect(Collectors.toList());
+			favoritos.addAll(noFavoritos);
+			restaurantes = favoritos;
+		} else {
+			restaurantes = restauranteService.obtenerTodosRestaurantes();
+		}
+
 		model.addAttribute("restaurantes", restaurantes);
 		return "RealizarPedido";
 	}
@@ -110,60 +143,44 @@ public class GestorPedidos {
 	}
 
 	@PostMapping("/RestaurantePedido/agregarItem")
-	public String agregarItem(@RequestParam("itemId") Long itemId, @ModelAttribute("pedidoItems") List<ItemMenu> pedidoItems, Model model) {
-		ItemMenu item = restauranteService.obtenerItemPorId(itemId);
+	public String agregarItem(@RequestParam("itemId") Long itemId, @ModelAttribute("pedidoItems") List<ItemPedido> pedidoItems, Model model) {
+		ItemMenu itemMenu = restauranteService.obtenerItemPorId(itemId);
 		boolean itemExists = false;
 
-		for (ItemMenu pedidoItem : pedidoItems) {
-			if (pedidoItem.getId().equals(itemId)) {
-				pedidoItem.setCantidad(pedidoItem.getCantidad() + 1); // Incrementa la cantidad
+		for (ItemPedido pedidoItem : pedidoItems) {
+			if (pedidoItem.getNombre().equals(itemMenu.getNombre())) {
+				pedidoItem.setCantidad(pedidoItem.getCantidad() + 1);
 				itemExists = true;
 				break;
 			}
 		}
 
 		if (!itemExists) {
-			item.setCantidad(1); // Establece la cantidad inicial a 1
-			pedidoItems.add(item);
+			ItemPedido itemPedido = new ItemPedido(itemMenu.getTipo(), itemMenu.getNombre(), itemMenu.getPrecio(), 1);
+			pedidoItems.add(itemPedido);
 		}
 
-		logger.info("Item añadido a la lista: " + item.getNombre());
+		logger.info("Item anadido a la lista: " + itemMenu.getNombre());
 		model.addAttribute("pedidoItems", pedidoItems);
-		double total = pedidoItems.stream().mapToDouble(i -> i.getPrecio() * i.getCantidad()).sum(); // Recalcula el total
-		model.addAttribute("total", total);
-		model.addAttribute("itemFrequencies", calculateItemFrequencies(pedidoItems)); // Actualiza las frecuencias
+		double total = pedidoItems.stream().mapToDouble(i -> i.getPrecio() * i.getCantidad()).sum();
+		model.addAttribute("total", String.format("%.2f", total));
+		model.addAttribute("itemFrequencies", calculateItemFrequencies(pedidoItems));
 		return "RestaurantePedido :: pedidoResumen";
 	}
 
 	@PostMapping("/RestaurantePedido/quitarItem")
-	public String quitarItem(@RequestParam("itemId") Long itemId, @ModelAttribute("pedidoItems") List<ItemMenu> pedidoItems, Model model) {
-		ItemMenu item = restauranteService.obtenerItemPorId(itemId);
-		pedidoItems.removeIf(i -> i.getId().equals(itemId)); // Ensure the correct item is removed
-		logger.info("Item eliminado de la lista: " + item.getNombre());
+	public String quitarItem(@RequestParam("itemId") Long itemId, @ModelAttribute("pedidoItems") List<ItemPedido> pedidoItems, Model model) {
+		ItemMenu itemMenu = restauranteService.obtenerItemPorId(itemId);
+		pedidoItems.removeIf(i -> i.getNombre().equals(itemMenu.getNombre())); // Compare by name instead of id
+		logger.info("Item eliminado de la lista: " + itemMenu.getNombre());
 		model.addAttribute("pedidoItems", pedidoItems);
-		double total = pedidoItems.stream().mapToDouble(ItemMenu::getPrecio).sum();
-		model.addAttribute("total", total);
+		double total = pedidoItems.stream().mapToDouble(i -> i.getPrecio() * i.getCantidad()).sum(); // Recalculate the total
+		model.addAttribute("total", String.format("%.2f", total));
 		model.addAttribute("itemFrequencies", calculateItemFrequencies(pedidoItems)); // Update frequencies
 		return "RestaurantePedido :: pedidoResumen";
 	}
 
-	@PostMapping("/RestaurantePedido/realizarPedido")
-	public String realizarPedido(@RequestParam("restauranteId") Long restauranteId, @ModelAttribute("pedidoItems") List<ItemMenu> pedidoItems, HttpSession session, Model model) {
-		String email = (String) session.getAttribute("email");
-		Cliente cliente = loginService.findClienteByUsuario(loginService.findUsuarioById(email));
-		Restaurante restaurante = restauranteService.obtenerRestaurantePorId(restauranteId);
 
-		Pedido pedido = new Pedido();
-		pedido.setCliente(cliente);
-		pedido.setRestaurante(restaurante);
-		pedido.setItems(pedidoItems);
-		pedido.setFecha(new Date());
-		pedido.setEstado(EstadoPedido.PEDIDO);
-
-		pedidoService.crearPedido(pedido);
-		model.addAttribute("message", "Pedido realizado con éxito");
-		return "redirect:/";
-	}
 
 	@PostMapping("/marcarFavorito")
 	public String marcarFavorito(@RequestParam("restauranteId") Long restauranteId, HttpSession session, Model model) {
@@ -187,6 +204,11 @@ public class GestorPedidos {
 		}
 		return "redirect:/RealizarPedido/ListaRestaurantes";
 	}
+	/* ###########################################################
+	 * #                         Bloque 3                 #
+	 * ###########################################################
+	 * Parte encargada de añadir o eliminar un restaurante de la lista de favoritos de un cliente.
+	 */
 
 	@PostMapping("/toggleFavorito")
 	@ResponseBody
@@ -213,5 +235,85 @@ public class GestorPedidos {
 			logger.error("Error al actualizar favorito", e);
 			return "Error";
 		}
+	}
+
+	/* ###########################################################
+	 * #                         Bloque 4                      #
+	 * ###########################################################
+	 * Parte encargada de realizar el pedido y de realizar el pago del pedido.
+	 */
+	@PostMapping("/RestaurantePedido/realizarPedido")
+	public String realizarPedido(@RequestParam("restauranteId") Long restauranteId, @ModelAttribute("pedidoItems") List<ItemPedido> pedidoItems, HttpSession session, Model model) {
+		String email = (String) session.getAttribute("email");
+		Cliente cliente = loginService.findClienteByUsuario(loginService.findUsuarioById(email));
+		Restaurante restaurante = restauranteService.obtenerRestaurantePorId(restauranteId);
+
+		Pedido pedido = new Pedido();
+		pedido.setCliente(cliente);
+		pedido.setRestaurante(restaurante);
+		pedido.setFecha(new Date());
+		pedido.setEstado(EstadoPedido.PEDIDO);
+
+		// Set the restaurant for each ItemPedido and persist them
+		for (ItemPedido itemPedido : pedidoItems) {
+			itemPedido.setRestaurante(restaurante);
+			itemPedidoDAO.save(itemPedido);
+		}
+		pedido.setItems(pedidoItems);
+
+		pedidoService.crearPedido(pedido);
+
+		// Redirect to the payment interface
+		return "redirect:/RealizarPedido/PagoPedido?pedidoId=" + pedido.getId();
+	}
+
+	@GetMapping("/PagoPedido")
+	public String mostrarPagoPedido(@RequestParam("pedidoId") Long pedidoId, Model model, HttpSession session) {
+		String email = (String) session.getAttribute("email");
+		Cliente cliente = loginService.findClienteByUsuario(loginService.findUsuarioById(email));
+		Pedido pedido = pedidoService.obtenerPedidoPorId(pedidoId);
+		Restaurante restaurante = pedido.getRestaurante();
+
+		model.addAttribute("cliente", cliente);
+		model.addAttribute("pedido", pedido);
+		model.addAttribute("restaurante", restaurante);
+		return "PagoPedido"; // Ensure this matches the name of your HTML template
+	}
+
+	@PostMapping("/PagoPedido/realizarPago")
+	public String realizarPago(@RequestParam("pedidoId") Long pedidoId, @RequestParam("calle") String calle, @RequestParam("numero") String numero, @RequestParam("complemento") String complemento, @RequestParam("municipio") String municipio, @RequestParam("codigoPostal") String codigoPostal, @RequestParam("metodoPago") MetodoPago metodoPago, HttpSession session, Model model) {
+		logger.info("Entrando en realizarPago");
+		String email = (String) session.getAttribute("email");
+		Cliente cliente = loginService.findClienteByUsuario(loginService.findUsuarioById(email));
+		Pedido pedido = pedidoService.obtenerPedidoPorId(pedidoId);
+
+		if (cliente == null || pedido == null) {
+			logger.error("Cliente o pedido no encontrado");
+			model.addAttribute("message", "Error: Cliente o pedido no encontrado");
+			return "error";
+		}
+
+		Direccion direccion = new Direccion(CodigoPostal.fromCode(codigoPostal), calle, numero, complemento, municipio);
+		cliente.getDirecciones().add(direccion);
+		direccion.setCliente(cliente);
+		loginService.updateCliente(cliente);
+
+		// Verifica que los valores sean válidos antes de crear el pago
+		if (metodoPago == null || UUID.randomUUID() == null || new Date() == null) {
+			logger.error("Valores inválidos para el pago");
+			model.addAttribute("message", "Error: Valores inválidos para el pago");
+			return "error";
+		}
+
+		Pago pago = new Pago(pedido, metodoPago, UUID.randomUUID(), new Date());
+		logger.info("Guardando pago con datos: " + pago.getPedido().getId() + ", " + pago.getTipo() + ", " + pago.getIdTransaccion() + ", " + pago.getFechaTransaccion());
+		pago = pedidoService.guardarPago(pago); // Guarda primero el pago
+		pedido.setPago(pago);
+		pedido.setEstado(EstadoPedido.PAGADO);
+		pedidoService.actualizarPedido(pedido);
+
+		logger.info("Pago realizado con exito para el pedido: " + pedidoId);
+		model.addAttribute("message", "Pago realizado con éxito");
+		return "redirect:/";
 	}
 }

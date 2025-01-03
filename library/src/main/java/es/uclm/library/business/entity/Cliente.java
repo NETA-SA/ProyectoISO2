@@ -52,6 +52,10 @@ public class Cliente {
 	public void setFavoritos(Collection<Restaurante> favoritos) {
 		this.favoritos = favoritos;
 	}
+	// Cliente.java
+	public String getEmail() {
+		return usuario != null ? usuario.getIdUsuario() : null;
+	}
 
 	public Collection<Pedido> getPedidos() {
 		return pedidos;

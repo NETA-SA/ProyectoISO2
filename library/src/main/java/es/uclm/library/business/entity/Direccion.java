@@ -1,3 +1,4 @@
+// Direccion.java
 package es.uclm.library.business.entity;
 
 import jakarta.persistence.*;
@@ -86,5 +87,13 @@ public class Direccion {
 
 	public void setMunicipio(String municipio) {
 		this.municipio = municipio;
+	}
+
+	public Cliente getCliente() {
+		return cliente;
+	}
+
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
 	}
 }
