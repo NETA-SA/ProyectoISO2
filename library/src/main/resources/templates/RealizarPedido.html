@@ -74,7 +74,7 @@
     <tbody>
     <tr th:each="restaurante : ${restaurantes}">
       <td>
-        <a th:href="@{/restaurantes/RestaurantePedido(restauranteId=${restaurante.id})}">
+        <a th:href="@{/RealizarPedido/RestaurantePedido(restauranteId=${restaurante.id})}">
           <span th:text="${restaurante.nombre}">Nombre</span>
         </a>
       </td>

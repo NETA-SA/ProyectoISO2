@@ -38,4 +38,8 @@ public class PedidoService {
     @Autowired
     private ItemMenuDAO itemMenuDAO;
 
+    public void crearPedido(Pedido pedido) {
+        pedidoDAO.save(pedido);
+    }
+
 }

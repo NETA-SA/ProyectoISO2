@@ -1,0 +1,28 @@
+<!DOCTYPE HTML>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+  <title>Cartas</title>
+</head>
+<body>
+<div th:fragment="cartasFragment">
+  <ul>
+    <li th:each="carta : ${cartasMenu}">
+      <span th:text="${carta.nombre}"></span>
+      <ul>
+        <li th:each="item : ${carta.items}">
+          <span th:text="${item.nombre}"></span> - <span th:text="${item.precio}"></span>
+          <form th:action="@{/RealizarPedido/RestaurantePedido/agregarItem}" method="post" class="agregarItemForm" style="display:inline;">
+            <input type="hidden" name="itemId" th:value="${item.id}" />
+            <button type="submit">Agregar</button>
+          </form>
+          <form th:action="@{/RealizarPedido/RestaurantePedido/quitarItem}" method="post" class="quitarItemForm" style="display:inline;">
+            <input type="hidden" name="itemId" th:value="${item.id}" />
+            <button type="submit">Quitar</button>
+          </form>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+</body>
+</html>

@@ -39,6 +39,7 @@ public class RestauranteService {
 
     @Autowired
     private CartaMenuDAO cartaMenuDAO;
+    @Autowired
     private ItemMenuDAO itemMenuDAO;
 
     // Guardar una nueva carta
@@ -66,8 +67,12 @@ public class RestauranteService {
         return cartaMenuDAO.findByNombreAndRestauranteId(nombre, idRestaurante) != null;
     }
     
-    // Método para actualizar una carta
+    // Metodo para actualizar una carta
     public void actualizarCarta(CartaMenu cartaMenu) {
         cartaMenuDAO.save(cartaMenu); // Guardar cambios en la base de datos
+    }
+
+    public Restaurante obtenerRestaurantePorId(Long restauranteId) {
+        return restauranteDAO.findById(restauranteId).orElse(null);
     }
 }

@@ -2,25 +2,69 @@
 <html xmlns:th="https://www.thymeleaf.org">
 <head>
     <title>Restaurante Pedido</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#loadCartas").click(function() {
+                $.ajax({
+                    type: "GET",
+                    url: "/RealizarPedido/cartas",
+                    data: { restauranteId: $("#restauranteId").val() },
+                    success: function(response) {
+                        $("#cartasContainer").html(response);
+                    }
+                });
+            });
+
+            $(document).on("submit", "form.agregarItemForm", function(event) {
+                event.preventDefault();
+                var form = $(this);
+                $.ajax({
+                    type: form.attr("method"),
+                    url: form.attr("action"),
+                    data: form.serialize(),
+                    success: function(response) {
+                        $("#pedidoResumen").html(response);
+                    }
+                });
+            });
+
+            $(document).on("submit", "form.quitarItemForm", function(event) {
+                event.preventDefault();
+                var form = $(this);
+                $.ajax({
+                    type: form.attr("method"),
+                    url: form.attr("action"),
+                    data: form.serialize(),
+                    success: function(response) {
+                        $("#pedidoResumen").html(response);
+                    }
+                });
+            });
+        });
+    </script>
 </head>
 <body>
 <h1>Cartas del Restaurante</h1>
-<ul>
-    <li th:each="carta : ${cartasMenu}">
-        <a th:href="@{/restaurantes/RestaurantePedido(restauranteId=${restauranteId}, cartaId=${carta.id})}">
-            <span th:text="${carta.nombre}"></span>
-        </a>
-    </li>
-</ul>
+<input type="hidden" id="restauranteId" th:value="${restauranteId}" />
+<button id="loadCartas">Cargar Cartas</button>
 
-<div th:if="${items != null}">
-    <h2>Items de la Carta</h2>
+<div id="cartasContainer"></div>
+
+<div id="pedidoResumen" th:if="${pedidoItems != null}" th:fragment="pedidoResumen">
+    <h2>Resumen del Pedido</h2>
     <ul>
-        <li th:each="item : ${items}">
-            <span th:text="${item.nombre}"></span> - <span th:text="${item.precio}"></span>
+        <li th:each="item : ${pedidoItems}">
+            <span th:text="${item.nombre}"></span> - <span th:text="${item.precio}"></span> - Cantidad: <span th:text="${item.cantidad}"></span>
         </li>
     </ul>
+    <p>Total: <span th:text="${total}"></span></p>
 </div>
+
+<form th:action="@{/RealizarPedido/RestaurantePedido/realizarPedido}" method="post">
+    <input type="hidden" name="restauranteId" th:value="${restauranteId}" />
+    <button type="submit">Realizar Pedido</button>
+</form>
 
 <button onclick="location.href='/RealizarPedido'">Volver</button>
 </body>

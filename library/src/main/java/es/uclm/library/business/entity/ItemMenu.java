@@ -29,17 +29,20 @@ public class ItemMenu {
 	@Column(nullable = false)
 	private Double precio;
 
-	// Constructor por defecto
+	@Transient
+	private int cantidad = 0; // Transient field for quantity
+
+	// Default constructor
 	public ItemMenu() {}
 
-	// Constructor con parámetros
+	// Constructor with parameters
 	public ItemMenu(TipoItemMenu tipo, String nombre, Double precio) {
 		this.tipo = tipo;
 		this.nombre = nombre;
 		this.precio = precio;
 	}
 
-	// Getters y Setters
+	// Getters and Setters
 	public Long getId() {
 		return id;
 	}
@@ -78,5 +81,13 @@ public class ItemMenu {
 
 	public void setPrecio(Double precio) {
 		this.precio = precio;
+	}
+
+	public int getCantidad() {
+		return cantidad;
+	}
+
+	public void setCantidad(int cantidad) {
+		this.cantidad = cantidad;
 	}
 }
