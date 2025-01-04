@@ -1,3 +1,4 @@
+// ServicioEntrega.java
 package es.uclm.library.business.entity;
 
 import jakarta.persistence.*;
@@ -16,8 +17,12 @@ public class ServicioEntrega {
 	private Pedido pedido;
 
 	@ManyToOne
-	@JoinColumn(name = "direccion_id", nullable = false)
-	private Direccion direccion;
+	@JoinColumn(name = "direccion_cliente_id", nullable = false)
+	private Direccion direccionCliente;
+
+	@ManyToOne
+	@JoinColumn(name = "direccion_restaurante_id", nullable = false)
+	private Direccion direccionRestaurante;
 
 	@ManyToOne
 	@JoinColumn(name = "repartidor_id", nullable = false)
@@ -31,19 +36,20 @@ public class ServicioEntrega {
 	@Column(name = "fecha_entrega")
 	private Date fechaEntrega;
 
-	// Constructor por defecto
+	// Default constructor
 	public ServicioEntrega() {}
 
-	// Constructor con parámetros
-	public ServicioEntrega(Pedido pedido, Direccion direccion, Repartidor repartidor, Date fechaRecepcion, Date fechaEntrega) {
+	// Constructor with parameters
+	public ServicioEntrega(Pedido pedido, Direccion direccionCliente, Direccion direccionRestaurante, Repartidor repartidor, Date fechaRecepcion, Date fechaEntrega) {
 		this.pedido = pedido;
-		this.direccion = direccion;
+		this.direccionCliente = direccionCliente;
+		this.direccionRestaurante = direccionRestaurante;
 		this.repartidor = repartidor;
 		this.fechaRecepcion = fechaRecepcion;
 		this.fechaEntrega = fechaEntrega;
 	}
 
-	// Getters y Setters
+	// Getters and Setters
 	public Long getId() {
 		return id;
 	}
@@ -60,12 +66,20 @@ public class ServicioEntrega {
 		this.pedido = pedido;
 	}
 
-	public Direccion getDireccion() {
-		return direccion;
+	public Direccion getDireccionCliente() {
+		return direccionCliente;
 	}
 
-	public void setDireccion(Direccion direccion) {
-		this.direccion = direccion;
+	public void setDireccionCliente(Direccion direccionCliente) {
+		this.direccionCliente = direccionCliente;
+	}
+
+	public Direccion getDireccionRestaurante() {
+		return direccionRestaurante;
+	}
+
+	public void setDireccionRestaurante(Direccion direccionRestaurante) {
+		this.direccionRestaurante = direccionRestaurante;
 	}
 
 	public Repartidor getRepartidor() {

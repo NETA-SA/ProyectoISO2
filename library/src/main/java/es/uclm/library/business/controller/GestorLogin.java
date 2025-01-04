@@ -52,7 +52,7 @@ public class GestorLogin {
 					return "redirect:/restaurantes/RestaurantesPag";
 				}else {
 					if ("repartidor".equals(usuario.getRol())) {
-						return "redirect:/repartidores/RepartidoresPag";
+						return "redirect:/Repartos";
 					}else {
 						return "redirect:/";
 					}

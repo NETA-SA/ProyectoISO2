@@ -70,4 +70,8 @@ public class LoginService {
     public void updateCliente(Cliente cliente) {
         clienteDAO.save(cliente);
     }
+
+    public Repartidor findRepartidorByUsuario(Usuario usuario) {
+        return repartidorDAO.findByUsuario(usuario);
+    }
 }

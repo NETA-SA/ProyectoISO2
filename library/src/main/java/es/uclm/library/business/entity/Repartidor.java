@@ -1,6 +1,7 @@
 package es.uclm.library.business.entity;
 
 import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
 public class Repartidor {
@@ -10,10 +11,11 @@ public class Repartidor {
 	private Long id;
 
 	@OneToOne
-	@JoinColumn(name = "idUsuario",referencedColumnName = "idUsuario", nullable = false)
+	@JoinColumn(name = "idUsuario", referencedColumnName = "idUsuario", nullable = false)
 	private Usuario usuario;
 
-	// Other fields and methods
+	@OneToMany(mappedBy = "repartidor")
+	private List<ServicioEntrega> serviciosEntrega;
 
 	// Default constructor
 	public Repartidor() {}
@@ -36,5 +38,11 @@ public class Repartidor {
 		this.usuario = usuario;
 	}
 
-	// Other getters and setters
+	public List<ServicioEntrega> getServiciosEntrega() {
+		return serviciosEntrega;
+	}
+
+	public void setServiciosEntrega(List<ServicioEntrega> serviciosEntrega) {
+		this.serviciosEntrega = serviciosEntrega;
+	}
 }

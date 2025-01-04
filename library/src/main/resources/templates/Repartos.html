@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Repartos</title>
+</head>
+<body>
+<h1>Mis Servicios de Entrega</h1>
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Pedido</th>
+        <th>Dirección Cliente</th>
+        <th>Dirección Restaurante</th>
+        <th>Fecha Recepción</th>
+        <th>Fecha Entrega</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="servicio : ${serviciosEntrega}">
+        <td th:text="${servicio.id}"></td>
+        <td th:text="${servicio.pedido.id}"></td>
+        <td th:text="${servicio.direccionCliente.calle} + ' ' + ${servicio.direccionCliente.numero}"></td>
+        <td th:text="${servicio.direccionRestaurante.calle} + ' ' + ${servicio.direccionRestaurante.numero}"></td>
+        <td th:text="${#dates.format(servicio.fechaRecepcion, 'dd/MM/yyyy HH:mm')}"></td>
+        <td th:if="${servicio.pedido.estado.name() == 'ENTREGADO'}" th:text="${#dates.format(servicio.fechaEntrega, 'dd/MM/yyyy HH:mm')}"></td>
+        <td th:if="${servicio.pedido.estado.name() != 'ENTREGADO'}">
+            <form th:if="${servicio.pedido.estado.name() == 'PAGADO'}" th:action="@{/Repartos/recogerPedido}" method="post">
+                <input type="hidden" name="servicioId" th:value="${servicio.id}" />
+                <button type="submit">Recoger Pedido</button>
+            </form>
+            <form th:if="${servicio.pedido.estado.name() == 'RECOGIDO'}" th:action="@{/Repartos/entregarPedido}" method="post">
+                <input type="hidden" name="servicioId" th:value="${servicio.id}" />
+                <button type="submit">Entregar Pedido</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<form th:action="@{/}" method="get">
+    <button type="submit">Volver</button>
+</form>
+
+</body>
+</html>
