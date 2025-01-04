@@ -163,7 +163,7 @@ public class GestorPedidos {
 		logger.info("Item anadido a la lista: " + itemMenu.getNombre());
 		model.addAttribute("pedidoItems", pedidoItems);
 		double total = pedidoItems.stream().mapToDouble(i -> i.getPrecio() * i.getCantidad()).sum();
-		model.addAttribute("total", String.format("%.2f", total));
+		model.addAttribute("total");
 		model.addAttribute("itemFrequencies", calculateItemFrequencies(pedidoItems));
 		return "RestaurantePedido :: pedidoResumen";
 	}
@@ -175,7 +175,7 @@ public class GestorPedidos {
 		logger.info("Item eliminado de la lista: " + itemMenu.getNombre());
 		model.addAttribute("pedidoItems", pedidoItems);
 		double total = pedidoItems.stream().mapToDouble(i -> i.getPrecio() * i.getCantidad()).sum(); // Recalculate the total
-		model.addAttribute("total", String.format("%.2f", total));
+		model.addAttribute("total");
 		model.addAttribute("itemFrequencies", calculateItemFrequencies(pedidoItems)); // Update frequencies
 		return "RestaurantePedido :: pedidoResumen";
 	}
@@ -294,6 +294,7 @@ public class GestorPedidos {
 		}
 
 		Direccion direccion = new Direccion(CodigoPostal.fromCode(codigoPostal), calle, numero, complemento, municipio);
+		pedidoService.guardarDireccion(direccion);
 		cliente.getDirecciones().add(direccion);
 		direccion.setCliente(cliente);
 		loginService.updateCliente(cliente);

@@ -39,6 +39,9 @@ public class PedidoService {
     private ItemPedidoDAO itemPedidoDAO;
 
     @Autowired
+    private DireccionDAO direccionDAO;
+
+    @Autowired
     private PagoDAO pagoDAO;
 
 
@@ -56,5 +59,9 @@ public class PedidoService {
 
     public Pago guardarPago(Pago pago) {
         return pagoDAO.save(pago);
+    }
+
+    public Direccion guardarDireccion(Direccion direccion) {
+        return direccionDAO.save(direccion);
     }
 }
