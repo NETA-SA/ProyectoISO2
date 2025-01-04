@@ -23,6 +23,28 @@ public class RepartoService {
     @Autowired
     private RepartidorDAO repartidorDAO;
 
+    public Repartidor obtenerRepartidorDisponible() {
+        List<Repartidor> repartidores = repartidorDAO.findAll();
+        for (Repartidor repartidor : repartidores) {
+            if (repartidor.getServiciosEntrega().isEmpty()) {
+                return repartidor;
+            }
+        }
+        return null;
+    }
 
+    public List<ServicioEntrega> obtenerServiciosPorRepartidor(Repartidor repartidor) {
+        return servicioEntregaDAO.findByRepartidor(repartidor);
+    }
 
+    public ServicioEntrega obtenerServicioPorId(Long servicioId) {
+        return servicioEntregaDAO.findById(servicioId).orElse(null);
+    }
+
+    public void actualizarServicioEntrega(ServicioEntrega servicioEntrega) {
+        servicioEntregaDAO.save(servicioEntrega);
+    }
+    public void actualizarRepartidor(Repartidor repartidor) {
+        repartidorDAO.save(repartidor);
+    }
 }

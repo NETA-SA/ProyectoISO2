@@ -5,6 +5,9 @@
 </head>
 <body>
 <h1>Pago del Pedido</h1>
+<div th:if="${message}">
+  <p th:text="${message}" style="color: red;"></p>
+</div>
 <div>
   <h2>Datos del Cliente</h2>
   <p th:text="'Nombre: ' + ${cliente.nombre}"></p>
@@ -40,6 +43,7 @@
   <ul>
     <li th:each="item : ${pedido.items}" th:text="${item.nombre} + ' - ' + ${item.cantidad} + ' x ' + ${item.precio}"></li>
   </ul>
+  <p>Total a Pagar: <span th:text="${#numbers.formatDecimal(total, 2, 2)}"></span></p>
 </div>
 <div>
   <h2>Datos del Restaurante</h2>

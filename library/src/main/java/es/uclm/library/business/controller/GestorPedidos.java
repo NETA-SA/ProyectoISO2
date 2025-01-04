@@ -2,6 +2,7 @@ package es.uclm.library.business.controller;
 
 import es.uclm.library.business.entity.*;
 import es.uclm.library.business.service.PedidoService;
+import es.uclm.library.business.service.RepartoService;
 import es.uclm.library.business.service.RestauranteService;
 import es.uclm.library.business.service.LoginService;
 import es.uclm.library.persistence.ItemPedidoDAO;
@@ -29,6 +30,8 @@ public class GestorPedidos {
 
 	@Autowired
 	private PedidoService pedidoService;
+
+	@Autowired RepartoService RepartoService;
 
 	@Autowired
 	private RestauranteService restauranteService;
@@ -163,7 +166,7 @@ public class GestorPedidos {
 		logger.info("Item anadido a la lista: " + itemMenu.getNombre());
 		model.addAttribute("pedidoItems", pedidoItems);
 		double total = pedidoItems.stream().mapToDouble(i -> i.getPrecio() * i.getCantidad()).sum();
-		model.addAttribute("total");
+		model.addAttribute("total", total);
 		model.addAttribute("itemFrequencies", calculateItemFrequencies(pedidoItems));
 		return "RestaurantePedido :: pedidoResumen";
 	}
@@ -175,7 +178,7 @@ public class GestorPedidos {
 		logger.info("Item eliminado de la lista: " + itemMenu.getNombre());
 		model.addAttribute("pedidoItems", pedidoItems);
 		double total = pedidoItems.stream().mapToDouble(i -> i.getPrecio() * i.getCantidad()).sum(); // Recalculate the total
-		model.addAttribute("total");
+		model.addAttribute("total",total);
 		model.addAttribute("itemFrequencies", calculateItemFrequencies(pedidoItems)); // Update frequencies
 		return "RestaurantePedido :: pedidoResumen";
 	}
@@ -274,9 +277,12 @@ public class GestorPedidos {
 		Pedido pedido = pedidoService.obtenerPedidoPorId(pedidoId);
 		Restaurante restaurante = pedido.getRestaurante();
 
+		double total = pedido.getItems().stream().mapToDouble(i -> i.getPrecio() * i.getCantidad()).sum();
+
 		model.addAttribute("cliente", cliente);
 		model.addAttribute("pedido", pedido);
 		model.addAttribute("restaurante", restaurante);
+		model.addAttribute("total", total);
 		return "PagoPedido"; // Ensure this matches the name of your HTML template
 	}
 
@@ -312,6 +318,21 @@ public class GestorPedidos {
 		pedido.setPago(pago);
 		pedido.setEstado(EstadoPedido.PAGADO);
 		pedidoService.actualizarPedido(pedido);
+
+		// Crear ServicioEntrega
+		Restaurante restaurante = pedido.getRestaurante();
+		Direccion direccionRestaurante = restaurante.getDireccion(); // Assuming Restaurante has a Direccion
+		Direccion direccionCliente = direccion; // Use the client's address
+		Repartidor repartidor = RepartoService.obtenerRepartidorDisponible();
+
+		if (repartidor == null) {
+			logger.error("No hay repartidores disponibles en este momento");
+			model.addAttribute("message", "No hay repartidores disponibles en este momento");
+			return mostrarPagoPedido(pedidoId, model, session); // Redirigir a la vista PagoPedido
+		}
+
+		ServicioEntrega servicioEntrega = new ServicioEntrega(pedido, direccionCliente, direccionRestaurante, repartidor, new Date(), null);
+		pedidoService.guardarServicioEntrega(servicioEntrega);
 
 		logger.info("Pago realizado con exito para el pedido: " + pedidoId);
 		model.addAttribute("message", "Pago realizado con éxito");
