@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import es.uclm.library.business.entity.Login;
 import es.uclm.library.business.entity.Usuario;
+import es.uclm.library.business.entity.Cliente;
 
 
 @Controller
@@ -45,7 +46,7 @@ public class GestorLogin {
 			Usuario usuario = loginService.findUsuarioById(idUsuario);
 			session.setAttribute("email", idUsuario);
 			if ("cliente".equals(usuario.getRol())) {
-				return "redirect:/RealizarPedido";
+				return "redirect:/login/BienvenidaUsuario";
 			}else {
 				if ("restaurante".equals(usuario.getRol())) {
 					logger.info("inicio como restaurante exitoso");
@@ -63,5 +64,15 @@ public class GestorLogin {
 			model.addAttribute("error", "Credenciales incorrectas, intentalo de nuevo");
 			return "redirect:/login"; // Vuelve a mostrar el formulario de login con un mensaje de error
 		}
+	}
+
+	@GetMapping("/BienvenidaUsuario")
+	public String bienvenidaUsuario(HttpSession session, Model model) {
+		String email = (String) session.getAttribute("email");
+		Usuario usuario = loginService.findUsuarioById(email);
+		Cliente cliente = loginService.findClienteByUsuario(usuario);
+
+		model.addAttribute("nombreUsuario", cliente.getNombre());
+		return "BienvenidaUsuario";
 	}
 }

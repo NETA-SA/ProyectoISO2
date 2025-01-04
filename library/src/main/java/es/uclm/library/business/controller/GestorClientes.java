@@ -25,7 +25,4 @@ public class GestorClientes {
 	private ClienteService clienteService;
 	@Autowired
 	private RestauranteService restauranteService;
-
-
-
 }

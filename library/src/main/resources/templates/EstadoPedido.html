@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <title>Estado del Pedido</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<h1>Estado de tus Pedidos</h1>
+<table>
+    <thead>
+    <tr>
+        <th>ID del Pedido</th>
+        <th>Fecha</th>
+        <th>Estado</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="pedido : ${pedidos}">
+        <td th:text="${pedido.id}"></td>
+        <td th:text="${pedido.fecha}"></td>
+        <td th:text="${pedido.estado}"></td>
+    </tr>
+    </tbody>
+</table>
+<!-- Botón para regresar -->
+<div style="margin-top: 20px;">
+    <form action="/login/BienvenidaUsuario" method="get">
+        <button type="submit">Volver</button>
+    </form>
+</div>
+</body>
+</html>

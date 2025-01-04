@@ -1,0 +1,26 @@
+<!DOCTYPE HTML>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <title>Bienvenida al Usuario</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<h1>Bienvenido, <span th:text="${nombreUsuario}">Usuario</span>!</h1>
+<div>
+    <form action="/RealizarPedido" method="get">
+        <button type="submit">Realizar Pedido</button>
+    </form>
+</div>
+<div>
+    <form action="/RealizarPedido/EstadoPedido" method="get">
+        <button type="submit">Estado del Pedido</button>
+    </form>
+</div>
+<!-- Botón para regresar -->
+<div style="margin-top: 20px;">
+    <form action="/" method="get">
+        <button type="submit">Salir</button>
+    </form>
+</div>
+</body>
+</html>

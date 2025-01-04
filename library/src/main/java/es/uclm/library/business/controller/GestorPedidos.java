@@ -317,4 +317,15 @@ public class GestorPedidos {
 		model.addAttribute("message", "Pago realizado con éxito");
 		return "redirect:/";
 	}
+
+	@GetMapping("/EstadoPedido")
+	public String estadoPedido(HttpSession session, Model model) {
+		String email = (String) session.getAttribute("email");
+		Usuario usuario = loginService.findUsuarioById(email);
+		Cliente cliente = loginService.findClienteByUsuario(usuario);
+
+		model.addAttribute("pedidos", cliente.getPedidos());
+		return "EstadoPedido";
+	}
+
 }
