@@ -286,6 +286,8 @@ public class GestorPedidos {
 		return "PagoPedido"; // Ensure this matches the name of your HTML template
 	}
 
+	// GestorPedidos.java
+	// GestorPedidos.java
 	@PostMapping("/PagoPedido/realizarPago")
 	public String realizarPago(@RequestParam("pedidoId") Long pedidoId, @RequestParam("calle") String calle, @RequestParam("numero") String numero, @RequestParam("complemento") String complemento, @RequestParam("municipio") String municipio, @RequestParam("codigoPostal") String codigoPostal, @RequestParam("metodoPago") MetodoPago metodoPago, HttpSession session, Model model) {
 		logger.info("Entrando en realizarPago");
@@ -299,40 +301,51 @@ public class GestorPedidos {
 			return "error";
 		}
 
-		Direccion direccion = new Direccion(CodigoPostal.fromCode(codigoPostal), calle, numero, complemento, municipio);
+		CodigoPostal codigopostal;
+		try {
+			codigopostal = CodigoPostal.fromCode(codigoPostal);
+			if (!codigopostal.getLocation().equalsIgnoreCase(municipio)) {
+				model.addAttribute("message", "El municipio no concuerda con el código postal.");
+				return mostrarPagoPedido(pedidoId, model, session);
+			}
+		} catch (IllegalArgumentException e) {
+			model.addAttribute("message", "Aún no hay servicio para esa localización.");
+			return mostrarPagoPedido(pedidoId, model, session);
+		}
+
+		Direccion direccion = new Direccion(codigopostal, calle, numero, complemento, municipio);
 		pedidoService.guardarDireccion(direccion);
 		cliente.getDirecciones().add(direccion);
 		direccion.setCliente(cliente);
 		loginService.updateCliente(cliente);
 
-		// Verifica que los valores sean válidos antes de crear el pago
-		if (metodoPago == null || UUID.randomUUID() == null || new Date() == null) {
-			logger.error("Valores inválidos para el pago");
-			model.addAttribute("message", "Error: Valores inválidos para el pago");
-			return "error";
-		}
-
 		Pago pago = new Pago(pedido, metodoPago, UUID.randomUUID(), new Date());
 		logger.info("Guardando pago con datos: " + pago.getPedido().getId() + ", " + pago.getTipo() + ", " + pago.getIdTransaccion() + ", " + pago.getFechaTransaccion());
-		pago = pedidoService.guardarPago(pago); // Guarda primero el pago
+		pago = pedidoService.guardarPago(pago);
 		pedido.setPago(pago);
 		pedido.setEstado(EstadoPedido.PAGADO);
 		pedidoService.actualizarPedido(pedido);
 
-		// Crear ServicioEntrega
 		Restaurante restaurante = pedido.getRestaurante();
-		Direccion direccionRestaurante = restaurante.getDireccion(); // Assuming Restaurante has a Direccion
-		Direccion direccionCliente = direccion; // Use the client's address
+		Direccion direccionRestaurante = restaurante.getDireccion();
+		Direccion direccionCliente = direccion;
 		Repartidor repartidor = RepartoService.obtenerRepartidorDisponible();
 
 		if (repartidor == null) {
 			logger.error("No hay repartidores disponibles en este momento");
 			model.addAttribute("message", "No hay repartidores disponibles en este momento");
-			return mostrarPagoPedido(pedidoId, model, session); // Redirigir a la vista PagoPedido
+			return mostrarPagoPedido(pedidoId, model, session);
 		}
 
 		ServicioEntrega servicioEntrega = new ServicioEntrega(pedido, direccionCliente, direccionRestaurante, repartidor, new Date(), null);
-		pedidoService.guardarServicioEntrega(servicioEntrega);
+		servicioEntrega = pedidoService.guardarServicioEntrega(servicioEntrega);
+
+		pedido.setEntrega(servicioEntrega);
+		pedidoService.actualizarPedido(pedido);
+
+		// Marcar el repartidor como no disponible
+		repartidor.setDisponible(false);
+		RepartoService.actualizarRepartidor(repartidor);
 
 		logger.info("Pago realizado con exito para el pedido: " + pedidoId);
 		model.addAttribute("message", "Pago realizado con éxito");

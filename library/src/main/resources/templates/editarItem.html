@@ -2,6 +2,7 @@
 <html xmlns:th="https://www.thymeleaf.org">
 <head>
     <title>Editar Ítem</title>
+    <link rel="stylesheet" th:href="@{/css/editarItem.css}">
 </head>
 <body>
 <h1>Editar Ítem</h1>
@@ -11,7 +12,7 @@
 
     <div>
         <label for="tipo">Tipo:</label>
-        <select th:field="*{tipo}">
+        <select id="tipo" th:field="*{tipo}">
             <option value="PRIMER_PLATO">Primer Plato</option>
             <option value="SEGUNDO_PLATO">Segundo Plato</option>
             <option value="POSTRE">Postre</option>
@@ -24,7 +25,7 @@
 
     <div>
         <label for="precio">Precio:</label>
-        <input type="number" step="0.01" id="precio" th:field="*{precio}"  required />
+        <input type="number" step="0.01" id="precio" th:field="*{precio}" required />
     </div>
 
     <label for="nuevaCartaId">Cambiar la carta:</label>

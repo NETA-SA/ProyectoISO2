@@ -65,9 +65,9 @@ public class GestorRepartos {
 			servicioEntrega.setFechaEntrega(new Date());
 			repartoService.actualizarServicioEntrega(servicioEntrega);
 
-			// Eliminar la entrega del repartidor
+			// Marcar el repartidor como disponible
 			Repartidor repartidor = servicioEntrega.getRepartidor();
-			repartidor.getServiciosEntrega().remove(servicioEntrega);
+			repartidor.setDisponible(true);
 			repartoService.actualizarRepartidor(repartidor);
 
 			model.addAttribute("message", "Pedido entregado con éxito");

@@ -63,11 +63,21 @@ public class GestorRegistro {
 
             switch (role) {
                 case "cliente":
-                        Cliente cliente = new Cliente(usuario, clienteNombre, apellidos, dni);
-                        loginService.registerCliente(cliente);
+                    Cliente cliente = new Cliente(usuario, clienteNombre, apellidos, dni);
+                    loginService.registerCliente(cliente);
                     break;
                 case "restaurante":
-                    CodigoPostal codigoPostal = CodigoPostal.fromCode(codigoPostalStr);
+                    CodigoPostal codigoPostal;
+                    try {
+                        codigoPostal = CodigoPostal.fromCode(codigoPostalStr);
+                        if (!codigoPostal.getLocation().equalsIgnoreCase(municipio)) {
+                            model.addAttribute("errorMessage", "El municipio no concuerda con el código postal.");
+                            return "Registro";
+                        }
+                    } catch (IllegalArgumentException e) {
+                        model.addAttribute("errorMessage", "Aún no hay servicio para esa localización.");
+                        return "Registro";
+                    }
                     Direccion direccion = new Direccion(codigoPostal, calle, numero, complemento, municipio);
                     Restaurante restaurante = new Restaurante();
                     restaurante.setUsuario(usuario);
@@ -84,12 +94,12 @@ public class GestorRegistro {
                 default:
                     throw new IllegalArgumentException("Invalid role: " + role);
             }
-            model.addAttribute("message", "Registration successful");
+            model.addAttribute("successMessage", "Registro exitoso");
 
         } catch (Exception e) {
             logger.error("Registration error", e);
-            model.addAttribute("message", "Registration failed");
+            model.addAttribute("errorMessage", "Registration failed");
         }
-        return "redirect:/";
+        return "Registro";
     }
 }

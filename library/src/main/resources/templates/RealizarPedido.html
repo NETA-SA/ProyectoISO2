@@ -3,38 +3,7 @@
 <head>
   <title>Realizar Pedido</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <style>
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      flex-direction: column;
-    }
-    .form-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .form-container div {
-      margin: 10px 0;
-    }
-    .table-container {
-      margin-top: 20px;
-    }
-    table {
-      border-collapse: collapse;
-      width: 100%;
-    }
-    th, td {
-      border: 1px solid #ddd;
-      padding: 8px;
-      text-align: center; /* Center the text in table headers and data cells */
-    }
-    th {
-      background-color: #f2f2f2;
-    }
-  </style>
+  <link rel="stylesheet" th:href="@{/css/realizarPedido.css}">
   <script>
     function toggleFavorito(restauranteId, isChecked) {
       const xhr = new XMLHttpRequest();

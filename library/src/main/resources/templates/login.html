@@ -1,30 +1,29 @@
 <!DOCTYPE HTML>
 <html xmlns:th="https://www.thymeleaf.org">
-    <head>
-        <title>Login</title>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    </head>
-    <body>
-        <h1>Iniciar sesión</h1>
-        <!-- Asociamos el formulario al objeto 'usuario' -->
-        <form th:action="@{/login}" method="post" th:object="${usuario}">
-            <div>
-                <label for="idUsuario">Usuario:</label>
-                <!-- Campo que está asociado al atributo 'idUsuario' del objeto 'usuario' -->
-                <input type="text" th:field="*{idUsuario}" id="idUsuario" name="idUsuario" required />
-            </div>
-            <div>
-                <label for="pass">Contraseña:</label>
-                <!-- Campo asociado al atributo 'pass' del objeto 'usuario' -->
-                <input type="password" th:field="*{pass}" id="pass" name="pass" required />
-            </div>
-            <div>
-                <button type="submit">Entrar</button>
-            </div>
-            <!-- Muestra el mensaje de error si existe -->
-            <div th:if="${error}">
-                <p style="color:red;" th:text="${error}"></p>
-            </div>
-        </form>
-    </body>
+<head>
+    <title>Login</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" th:href="@{/css/login.css}">
+</head>
+<body>
+<div class="top-right">
+    <a href="/" class="home-button">Inicio</a>
+</div>
+<div class="container">
+    <h1>Login</h1>
+    <form action="/login" method="post">
+        <div>
+            <label for="idUsuario">Correo:</label>
+            <input type="email" id="idUsuario" name="idUsuario" required>
+        </div>
+        <div>
+            <label for="pass">Contraseña:</label>
+            <input type="password" id="pass" name="pass" required>
+        </div>
+        <div>
+            <button type="submit">Iniciar Sesion</button>
+        </div>
+    </form>
+</div>
+</body>
 </html>

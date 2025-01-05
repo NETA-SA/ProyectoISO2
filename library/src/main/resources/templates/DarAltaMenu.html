@@ -2,6 +2,8 @@
 <html xmlns:th="https://www.thymeleaf.org">
 <head>
     <title>Dar Alta Menú</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" th:href="@{/css/darAltaMenu.css}">
 </head>
 <body>
 <h1>Agregar un nuevo ítem al menú</h1>
@@ -11,10 +13,10 @@
     <input type="hidden" th:name="idUsuario" th:value="${idUsuario}" />
 
     <!-- Mostrar errores o mensajes de éxito -->
-    <div th:if="${success}" style="color: green;">
+    <div th:if="${success}" class="message" style="color: green;">
         <p th:text="${success}"></p>
     </div>
-    <div th:if="${error}" style="color: red;">
+    <div th:if="${error}" class="message" style="color: red;">
         <p th:text="${error}"></p>
     </div>
 
@@ -38,7 +40,7 @@
     <!-- Formulario de Ítem del Menú -->
     <div>
         <label for="tipo">Tipo:</label>
-        <select th:field="*{tipo}">
+        <select id="tipo" th:field="*{tipo}">
             <option value="PRIMER_PLATO">Primer Plato</option>
             <option value="SEGUNDO_PLATO">Segundo Plato</option>
             <option value="POSTRE">Postre</option>

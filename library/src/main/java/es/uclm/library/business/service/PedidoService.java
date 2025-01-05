@@ -65,7 +65,7 @@ public class PedidoService {
         return direccionDAO.save(direccion);
     }
 
-    public void guardarServicioEntrega(ServicioEntrega servicioEntrega) {
-        servicioEntregaDAO.save(servicioEntrega);
+    public ServicioEntrega guardarServicioEntrega(ServicioEntrega servicioEntrega) {
+        return servicioEntregaDAO.save(servicioEntrega);
     }
 }

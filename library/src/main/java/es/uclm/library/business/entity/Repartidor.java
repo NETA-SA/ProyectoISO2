@@ -1,3 +1,4 @@
+// Repartidor.java
 package es.uclm.library.business.entity;
 
 import jakarta.persistence.*;
@@ -17,12 +18,18 @@ public class Repartidor {
 	@OneToMany(mappedBy = "repartidor")
 	private List<ServicioEntrega> serviciosEntrega;
 
+	@Column(nullable = false)
+	private boolean disponible;
+
 	// Default constructor
-	public Repartidor() {}
+	public Repartidor() {
+		this.disponible = true; // Default to available
+	}
 
 	// Constructor with parameters
 	public Repartidor(Usuario usuario) {
 		this.usuario = usuario;
+		this.disponible = true; // Default to available
 	}
 
 	// Getters and Setters
@@ -44,5 +51,13 @@ public class Repartidor {
 
 	public void setServiciosEntrega(List<ServicioEntrega> serviciosEntrega) {
 		this.serviciosEntrega = serviciosEntrega;
+	}
+
+	public boolean isDisponible() {
+		return disponible;
+	}
+
+	public void setDisponible(boolean disponible) {
+		this.disponible = disponible;
 	}
 }
