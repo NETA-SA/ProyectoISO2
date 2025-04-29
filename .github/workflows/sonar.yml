@@ -28,8 +28,8 @@ jobs:
 
       - name: Build with Maven
         run: mvn clean install
-         working-directory: ./ProyectoISO2/library
+        working-directory: ./ProyectoISO2/library
 
       - name: Run SonarQube analysis
         run: mvn sonar:sonar -Dsonar.login=${{ secrets.SONAR_TOKEN }} -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }}
-         working-directory: ./ProyectoISO2/library
+        working-directory: ./ProyectoISO2/library
