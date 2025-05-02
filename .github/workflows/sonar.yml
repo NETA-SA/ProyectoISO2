@@ -5,6 +5,7 @@ on:
     branches: [ master-1.0, development ]
   pull_request:
     branches: [ master-1.0, development ]
+  workflow_dispatch:
 
 jobs:
   sonar:
