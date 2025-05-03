@@ -23,6 +23,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@DisplayName("Test unitarios para GestorLogin")
 @WebMvcTest(GestorLogin.class)
 class GestorLoginTest {
 
@@ -95,10 +96,10 @@ class GestorLoginTest {
             when(loginService.authenticate("reparto1", "pass")).thenReturn(true);
             Usuario usuario = new Usuario();
             usuario.setRol("repartidor");
-            when(loginService.findUsuarioById("repart1")).thenReturn(usuario);
+            when(loginService.findUsuarioById("reparto1")).thenReturn(usuario);
 
             mockMvc.perform(post("/login")
-                            .param("idUsuario", "repart1")
+                            .param("idUsuario", "reparto1")
                             .param("pass", "pass")
                             .session(session))
                     .andExpect(status().is3xxRedirection())
