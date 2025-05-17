@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="Restaurante_BD" uuid="013a20f4-0ee3-4e45-89d9-f4db864d2cf4">
+    <data-source source="LOCAL" name="RESTAURANTE" uuid="95bb844e-2559-440e-b227-70dbf7f8ccf6">
       <driver-ref>derby.embedded</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.apache.derby.jdbc.EmbeddedDriver</jdbc-driver>
-      <jdbc-url>jdbc:derby:C:\Users\MARIO\IdeaProjects\ProyectoISO2\library\RESTAURANTE</jdbc-url>
+      <jdbc-url>jdbc:derby:C:\Users\alvar\IdeaProjects\ProyectoISO\library\RESTAURANTE</jdbc-url>
       <jdbc-additional-properties>
         <property name="com.intellij.clouds.kubernetes.db.enabled" value="false" />
       </jdbc-additional-properties>
