@@ -8,6 +8,6 @@ class LibraryApplicationTests {
 
 	@Test
 	void contextLoads() {
+		//Nada
 	}
-
 }

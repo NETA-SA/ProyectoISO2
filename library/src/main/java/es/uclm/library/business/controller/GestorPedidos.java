@@ -62,7 +62,8 @@ public class GestorPedidos {
 	@ModelAttribute("itemFrequencies")
 	public List<ItemFrequency> calculateItemFrequencies(@ModelAttribute("pedidoItems") List<ItemPedido> pedidoItems) {
 		return pedidoItems.stream()
-				.filter(item -> item.getId() != null) // Filter out items with null IDs
+				//Quitamos los items con id null primero
+				.filter(item -> item.getId() != null)
 				.collect(Collectors.groupingBy(ItemPedido::getId, Collectors.counting()))
 				.entrySet().stream()
 				.map(entry -> new ItemFrequency(itemPedidoDAO.findById(entry.getKey()).orElse(null), entry.getValue()))
@@ -102,7 +103,7 @@ public class GestorPedidos {
 
 	@GetMapping
 	public String showRealizarPedido(Model model) {
-		return "RealizarPedido"; // Asegúrate de que el nombre de la vista coincida con el archivo HTML
+		return "RealizarPedido";
 	}
 
 	@GetMapping("/ListaRestaurantes")
@@ -176,7 +177,8 @@ public class GestorPedidos {
 	@PostMapping("/RestaurantePedido/quitarItem")
 	public String quitarItem(@RequestParam("itemId") Long itemId, @ModelAttribute("pedidoItems") List<ItemPedido> pedidoItems, Model model) {
 		ItemMenu itemMenu = restauranteService.obtenerItemPorId(itemId);
-		pedidoItems.removeIf(i -> i.getNombre().equals(itemMenu.getNombre())); // Compare by name instead of id
+		//Comparamos el nombre para removerlo de la lista
+		pedidoItems.removeIf(i -> i.getNombre().equals(itemMenu.getNombre()));
 		logger.info("Item eliminado de la lista: " + itemMenu.getNombre());
 		model.addAttribute("pedidoItems", pedidoItems);
 		double total = pedidoItems.stream().mapToDouble(i -> i.getPrecio() * i.getCantidad()).sum(); // Recalculate the total
@@ -259,16 +261,13 @@ public class GestorPedidos {
 		pedido.setFecha(new Date());
 		pedido.setEstado(EstadoPedido.PEDIDO);
 
-		// Set the restaurant for each ItemPedido and persist them
+		//Asignar cada item a su restaurante
 		for (ItemPedido itemPedido : pedidoItems) {
 			itemPedido.setRestaurante(restaurante);
 			itemPedidoDAO.save(itemPedido);
 		}
 		pedido.setItems(pedidoItems);
-
 		pedidoService.crearPedido(pedido);
-
-		// Redirect to the payment interface
 		return "redirect:/RealizarPedido/PagoPedido?pedidoId=" + pedido.getId();
 	}
 
@@ -285,11 +284,10 @@ public class GestorPedidos {
 		model.addAttribute("pedido", pedido);
 		model.addAttribute("restaurante", restaurante);
 		model.addAttribute("total", total);
-		return "PagoPedido"; // Ensure this matches the name of your HTML template
+		return "PagoPedido";
 	}
 
-	// GestorPedidos.java
-	// GestorPedidos.java
+
 	@PostMapping("/PagoPedido/realizarPago")
 	public String realizarPago(@RequestParam("pedidoId") Long pedidoId, @RequestParam("calle") String calle, @RequestParam("numero") String numero, @RequestParam("complemento") String complemento, @RequestParam("municipio") String municipio, @RequestParam("codigoPostal") String codigoPostal, @RequestParam("metodoPago") MetodoPago metodoPago, HttpSession session, Model model, SessionStatus sessionStatus) {
 		logger.info("Entrando en realizarPago");

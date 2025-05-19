@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import es.uclm.library.business.entity.Login;
 import es.uclm.library.business.entity.Usuario;
 import es.uclm.library.business.entity.Cliente;
 
@@ -25,15 +24,12 @@ public class GestorLogin {
 	// Metodo para mostrar el formulario de login 
 	@GetMapping
 	public String showLoginForm(Model model){
-		//model.addAttribute("usuario", new Usuario());
-		//return "login"; // Apunta al formulario de login de interfaces
 		Usuario usuario = new Usuario();
         	model.addAttribute("usuario", usuario);
         	return "login"; // nombre de la plantilla
 	}
 
 	// Metodo para procesar el formulario login
-	// GestorLogin.java
 	@PostMapping
 	public String processLogin(
 			@RequestParam("idUsuario") String idUsuario,
@@ -47,12 +43,14 @@ public class GestorLogin {
 			session.setAttribute("email", idUsuario);
 			if ("cliente".equals(usuario.getRol())) {
 				return "redirect:/login/BienvenidaUsuario";
-			}else {
+			}else
+			{
 				if ("restaurante".equals(usuario.getRol())) {
 					logger.info("inicio como restaurante exitoso");
 					return "redirect:/restaurantes/RestaurantesPag";
-				}else {
-					if ("repartidor".equals(usuario.getRol())) {
+			}else
+			{
+				if ("repartidor".equals(usuario.getRol())) {
 						return "redirect:/Repartos";
 					}else {
 						return "redirect:/";
@@ -62,7 +60,8 @@ public class GestorLogin {
 		} else {
 			logger.warn("Inicio de sesion fallido para el usuario: " + idUsuario);
 			model.addAttribute("error", "Credenciales incorrectas, intentalo de nuevo");
-			return "redirect:/login"; // Vuelve a mostrar el formulario de login con un mensaje de error
+			// Vuelve a mostrar el formulario de login con un mensaje de error
+			return "redirect:/login";
 		}
 	}
 
