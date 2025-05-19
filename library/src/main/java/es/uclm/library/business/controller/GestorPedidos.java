@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.support.SessionStatus;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -289,7 +291,7 @@ public class GestorPedidos {
 	// GestorPedidos.java
 	// GestorPedidos.java
 	@PostMapping("/PagoPedido/realizarPago")
-	public String realizarPago(@RequestParam("pedidoId") Long pedidoId, @RequestParam("calle") String calle, @RequestParam("numero") String numero, @RequestParam("complemento") String complemento, @RequestParam("municipio") String municipio, @RequestParam("codigoPostal") String codigoPostal, @RequestParam("metodoPago") MetodoPago metodoPago, HttpSession session, Model model) {
+	public String realizarPago(@RequestParam("pedidoId") Long pedidoId, @RequestParam("calle") String calle, @RequestParam("numero") String numero, @RequestParam("complemento") String complemento, @RequestParam("municipio") String municipio, @RequestParam("codigoPostal") String codigoPostal, @RequestParam("metodoPago") MetodoPago metodoPago, HttpSession session, Model model, SessionStatus sessionStatus) {
 		logger.info("Entrando en realizarPago");
 		String email = (String) session.getAttribute("email");
 		Cliente cliente = loginService.findClienteByUsuario(loginService.findUsuarioById(email));
@@ -349,6 +351,7 @@ public class GestorPedidos {
 
 		logger.info("Pago realizado con exito para el pedido: " + pedidoId);
 		model.addAttribute("message", "Pago realizado con éxito");
+		sessionStatus.setComplete(); //Indica a JVM que borre los datos de la sesion
 		return "redirect:/";
 	}
 
