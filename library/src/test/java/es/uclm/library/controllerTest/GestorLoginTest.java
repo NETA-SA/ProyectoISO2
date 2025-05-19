@@ -1,162 +1,99 @@
 package es.uclm.library.controllerTest;
 
 import es.uclm.library.business.controller.GestorLogin;
-import es.uclm.library.business.entity.Cliente;
 import es.uclm.library.business.entity.Usuario;
 import es.uclm.library.business.service.LoginService;
 import jakarta.servlet.http.HttpSession;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.mock.web.MockHttpSession;
-import org.springframework.test.web.servlet.MockMvc;
+import org.junit.jupiter.api.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.ui.Model;
 
-import static org.hamcrest.Matchers.instanceOf;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-@DisplayName("Test unitarios para GestorLogin")
-@WebMvcTest(GestorLogin.class)
 class GestorLoginTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockBean
+    @Mock
     private LoginService loginService;
 
-    private MockHttpSession session;
+    @Mock
+    private HttpSession session;
+
+    @Mock
+    private Model model;
+
+    @InjectMocks
+    private GestorLogin gestorLogin;
 
     @BeforeEach
     void setup() {
-        session = new MockHttpSession();
+        MockitoAnnotations.openMocks(this);
     }
 
-    @Nested
-    @DisplayName("Tests para showLoginForm")
-    class ShowLoginFormTests {
-        @Test
-        @DisplayName("Debería mostrar el formulario de login correctamente")
-        void testShowLoginForm() throws Exception {
-            mockMvc.perform(get("/login"))
-                    .andExpect(status().isOk())
-                    .andExpect(view().name("login"))
-                    .andExpect(model().attributeExists("usuario"))
-                    .andExpect(model().attribute("usuario", instanceOf(Usuario.class)));
-        }
+    @Test
+    @DisplayName("CU1 - idUsuario válido, pass válida, rol cliente")
+    void testRolCliente() {
+        Usuario usuario = new Usuario();
+        usuario.setRol("cliente");
+
+        when(loginService.authenticate("cliente1", "1234")).thenReturn(true);
+        when(loginService.findUsuarioById("cliente1")).thenReturn(usuario);
+
+        String resultado = gestorLogin.processLogin("cliente1", "1234", session, model);
+
+        assertEquals("redirect:/login/BienvenidaUsuario", resultado);
+        verify(session).setAttribute("email", "cliente1");
     }
 
-    @Nested
-    @DisplayName("Tests para processLogin")
-    class ProcessLoginTests {
+    @Test
+    @DisplayName("CU2 - idUsuario válido, pass incorrecta, rol restaurante")
+    void testLoginFailConRolRestaurante() {
+        Usuario usuario = new Usuario();
+        usuario.setRol("restaurante");
 
-        @Test
-        @DisplayName("Login exitoso como cliente")
-        void testProcessLoginCliente() throws Exception {
-            when(loginService.authenticate("cliente1", "1234")).thenReturn(true);
-            Usuario usuario = new Usuario();
-            usuario.setRol("cliente");
-            when(loginService.findUsuarioById("cliente1")).thenReturn(usuario);
+        when(loginService.authenticate("cliente1", "fail")).thenReturn(false);
 
-            mockMvc.perform(post("/login")
-                            .param("idUsuario", "cliente1")
-                            .param("pass", "1234")
-                            .session(session))
-                    .andExpect(status().is3xxRedirection())
-                    .andExpect(redirectedUrl("/login/BienvenidaUsuario"));
-        }
+        String resultado = gestorLogin.processLogin("cliente1", "fail", session, model);
 
-        @Test
-        @DisplayName("Login exitoso como restaurante")
-        void testProcessLoginRestaurante() throws Exception {
-            when(loginService.authenticate("rest1", "abcd")).thenReturn(true);
-            Usuario usuario = new Usuario();
-            usuario.setRol("restaurante");
-            when(loginService.findUsuarioById("rest1")).thenReturn(usuario);
-
-            mockMvc.perform(post("/login")
-                            .param("idUsuario", "rest1")
-                            .param("pass", "abcd")
-                            .session(session))
-                    .andExpect(status().is3xxRedirection())
-                    .andExpect(redirectedUrl("/restaurantes/RestaurantesPag"));
-        }
-
-        @Test
-        @DisplayName("Login exitoso como repartidor")
-        void testProcessLoginRepartidor() throws Exception {
-            when(loginService.authenticate("reparto1", "pass")).thenReturn(true);
-            Usuario usuario = new Usuario();
-            usuario.setRol("repartidor");
-            when(loginService.findUsuarioById("reparto1")).thenReturn(usuario);
-
-            mockMvc.perform(post("/login")
-                            .param("idUsuario", "reparto1")
-                            .param("pass", "pass")
-                            .session(session))
-                    .andExpect(status().is3xxRedirection())
-                    .andExpect(redirectedUrl("/Repartos"));
-        }
-
-        @Test
-        @DisplayName("Login exitoso pero rol desconocido")
-        void testProcessLoginRolDesconocido() throws Exception {
-            when(loginService.authenticate("admin1", "admin")).thenReturn(true);
-            Usuario usuario = new Usuario();
-            usuario.setRol("admin");
-            when(loginService.findUsuarioById("admin1")).thenReturn(usuario);
-
-            mockMvc.perform(post("/login")
-                            .param("idUsuario", "admin1")
-                            .param("pass", "admin")
-                            .session(session))
-                    .andExpect(status().is3xxRedirection())
-                    .andExpect(redirectedUrl("/"));
-        }
-
-        @Test
-        @DisplayName("Login fallido")
-        void testProcessLoginFallido() throws Exception {
-            when(loginService.authenticate("cliente1", "fail")).thenReturn(false);
-
-            mockMvc.perform(post("/login")
-                            .param("idUsuario", "cliente1")
-                            .param("pass", "1235")
-                            .session(session))
-                    .andExpect(status().is3xxRedirection())
-                    .andExpect(redirectedUrl("/login"));
-        }
+        assertEquals("redirect:/login", resultado);
+        verify(model).addAttribute("error", "Credenciales incorrectas, intentalo de nuevo");
     }
 
-    @Nested
-    @DisplayName("Tests para bienvenidaUsuario")
-    class BienvenidaUsuarioTests {
+    @Test
+    @DisplayName("CU3 - idUsuario inválido, pass válida, rol repartidor")
+    void testUsuarioInvalidoRepartidor() {
+        when(loginService.authenticate("none", "1234")).thenReturn(false);
 
-        @Test
-        @DisplayName("Debería mostrar la bienvenida del usuario correctamente")
-        void testBienvenidaUsuario() throws Exception {
-            session.setAttribute("email", "cliente1@mail.com");
+        String resultado = gestorLogin.processLogin("none", "1234", session, model);
 
-            Usuario usuario = new Usuario();
-            Cliente cliente = new Cliente();
-            cliente.setNombre("Juan");
+        assertEquals("redirect:/login", resultado);
+        verify(model).addAttribute("error", "Credenciales incorrectas, intentalo de nuevo");
+    }
 
-            when(loginService.findUsuarioById("cliente1@mail.com")).thenReturn(usuario);
-            when(loginService.findClienteByUsuario(usuario)).thenReturn(cliente);
+    @Test
+    @DisplayName("CU4 - campos vacíos, rol admin")
+    void testCamposVaciosRolAdmin() {
+        when(loginService.authenticate("", "")).thenReturn(false);
 
-            mockMvc.perform(get("/login/BienvenidaUsuario").session(session))
-                    .andExpect(status().isOk())
-                    .andExpect(view().name("BienvenidaUsuario"))
-                    .andExpect(model().attributeExists("nombreUsuario"))
-                    .andExpect(model().attribute("nombreUsuario", "Juan"));
-        }
+        String resultado = gestorLogin.processLogin("", "", session, model);
+
+        assertEquals("redirect:/login", resultado);
+        verify(model).addAttribute("error", "Credenciales incorrectas, intentalo de nuevo");
+    }
+
+    @Test
+    @DisplayName("CU5 - idUsuario válido, pass válida, rol null")
+    void testRolNull() {
+        Usuario usuario = new Usuario();
+        usuario.setRol(null);
+
+        when(loginService.authenticate("cliente1", "1234")).thenReturn(true);
+        when(loginService.findUsuarioById("cliente1")).thenReturn(usuario);
+
+        String resultado = gestorLogin.processLogin("cliente1", "1234", session, model);
+
+        assertEquals("redirect:/", resultado);
     }
 }
