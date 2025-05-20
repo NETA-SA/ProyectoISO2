@@ -50,8 +50,8 @@ public class GestorRegistro {
                            @RequestParam(value = "codigoPostal", required = false) String codigoPostalStr,
                            Model model) {
         try {
-            entityManager.clear(); // Clear the EntityManager to avoid any stale data
-
+            //Limpiamos el entityManager por si hay algun dato residual
+            entityManager.clear();
             Usuario usuario = loginService.findUsuarioById(email);
             if (usuario == null) {
                 usuario = new Usuario();
