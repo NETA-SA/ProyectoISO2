@@ -338,7 +338,7 @@ class GestorPedidosTest {
         when(pedidoService.guardarPago(any())).thenAnswer(inv -> inv.getArgument(0));
         when(pedidoService.guardarServicioEntrega(any())).thenAnswer(inv -> inv.getArgument(0));
 
-        String vista = gestorPedidos.realizarPago(pedidoId, "Calle Real", "5", "", "Talavera", "45600", MetodoPago.MasterCard, session, model);
+        String vista = gestorPedidos.realizarPago(pedidoId, "Calle Real", "5", "", "Talavera", "45600", MetodoPago.MASTERCARD, session, model);
 
         assertEquals("redirect:/", vista);
         verify(model).addAttribute(eq("message"), contains("Pago realizado con éxito"));
@@ -363,7 +363,7 @@ class GestorPedidosTest {
         when(loginService.findClienteByUsuario(null)).thenReturn(null); // cliente no encontrado
         when(pedidoService.obtenerPedidoPorId(pedidoId)).thenReturn(null); // pedido no encontrado
 
-        String vista = gestorPedidos.realizarPago(pedidoId, "Calle Luna", "7", "", municipio, codigoPostal, MetodoPago.Visa, session, model);
+        String vista = gestorPedidos.realizarPago(pedidoId, "Calle Luna", "7", "", municipio, codigoPostal, MetodoPago.VISA, session, model);
 
         verify(model).addAttribute(eq("message"), contains("Error: Cliente o pedido no encontrado"));
         assertEquals("error", vista);
