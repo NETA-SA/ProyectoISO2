@@ -12,6 +12,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.ui.Model;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.bind.support.SessionStatus;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,6 +45,9 @@ class GestorPedidosTest {
 
     @Mock
     private Model model;
+
+    @Mock
+    private SessionStatus sessionStatus;
 
     @InjectMocks
     private GestorPedidos gestorPedidos;
@@ -306,7 +310,7 @@ class GestorPedidosTest {
         when(loginService.findClienteByUsuario(any())).thenReturn(null);
         when(pedidoService.obtenerPedidoPorId(pedidoId)).thenReturn(null);
 
-        String vista = gestorPedidos.realizarPago(pedidoId, "Calle Falsa", "10", "", municipio, codigoPostal, MetodoPago.PAYPAL, session, model);
+        String vista = gestorPedidos.realizarPago(pedidoId, "Calle Falsa", "10", "", municipio, codigoPostal, MetodoPago.PAYPAL, session, model,sessionStatus);
 
         verify(model).addAttribute(eq("message"), contains("Error: Cliente o pedido no encontrado"));
         assertEquals("error", vista);
@@ -338,7 +342,7 @@ class GestorPedidosTest {
         when(pedidoService.guardarPago(any())).thenAnswer(inv -> inv.getArgument(0));
         when(pedidoService.guardarServicioEntrega(any())).thenAnswer(inv -> inv.getArgument(0));
 
-        String vista = gestorPedidos.realizarPago(pedidoId, "Calle Real", "5", "", "Talavera", "45600", MetodoPago.MASTERCARD, session, model);
+        String vista = gestorPedidos.realizarPago(pedidoId, "Calle Real", "5", "", "Talavera", "45600", MetodoPago.MASTERCARD, session, model,sessionStatus);
 
         assertEquals("redirect:/", vista);
         verify(model).addAttribute(eq("message"), contains("Pago realizado con éxito"));
@@ -363,7 +367,7 @@ class GestorPedidosTest {
         when(loginService.findClienteByUsuario(null)).thenReturn(null); // cliente no encontrado
         when(pedidoService.obtenerPedidoPorId(pedidoId)).thenReturn(null); // pedido no encontrado
 
-        String vista = gestorPedidos.realizarPago(pedidoId, "Calle Luna", "7", "", municipio, codigoPostal, MetodoPago.VISA, session, model);
+        String vista = gestorPedidos.realizarPago(pedidoId, "Calle Luna", "7", "", municipio, codigoPostal, MetodoPago.VISA, session, model,sessionStatus);
 
         verify(model).addAttribute(eq("message"), contains("Error: Cliente o pedido no encontrado"));
         assertEquals("error", vista);
