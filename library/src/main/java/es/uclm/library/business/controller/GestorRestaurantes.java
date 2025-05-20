@@ -1,11 +1,8 @@
 package es.uclm.library.business.controller;
 
-import es.uclm.library.business.entity.Direccion;
 import es.uclm.library.business.entity.ItemMenu;
 import es.uclm.library.business.entity.CartaMenu;
 import es.uclm.library.business.entity.Restaurante;
-import es.uclm.library.business.entity.TipoItemMenu;
-import es.uclm.library.persistence.CartaMenuDAO;
 import es.uclm.library.business.service.RestauranteService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -197,7 +194,8 @@ public class GestorRestaurantes {
 
 		List<CartaMenu> cartasMenu = restauranteService.obtenerCartasPorRestaurante(idRestaurante);
 		model.addAttribute("cartasMenu", cartasMenu);
-		return "verCartas"; // Nombre de la nueva vista que crearemos
+		// Nombre de la nueva vista que crearemos
+		return "verCartas";
 	}
 
 	@GetMapping("/verItems")
@@ -205,12 +203,14 @@ public class GestorRestaurantes {
 		CartaMenu carta = restauranteService.obtenerCartaPorId(cartaId);
 		if (carta == null) {
 			model.addAttribute("error", "Carta no encontrada.");
-			return "error"; // Vista de error (si no existe o no corresponde al restaurante del usuario)
+			// Vista de error (si no existe o no corresponde al restaurante del usuario)
+			return "error";
 		}
 
 		model.addAttribute("items", carta.getItems());
 		model.addAttribute("cartaId", cartaId);
-		return "verItems"; // Nombre de la nueva vista que crearemos
+		// Nombre de la nueva vista que crearemos
+		return "verItems";
 	}
 
 	@GetMapping("/editarItem")

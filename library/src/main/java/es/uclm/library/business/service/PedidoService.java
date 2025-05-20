@@ -1,10 +1,7 @@
 package es.uclm.library.business.service;
 
-import es.uclm.library.business.entity.Cliente;
 import es.uclm.library.business.entity.Direccion;
-import es.uclm.library.business.entity.ItemMenu;
 import es.uclm.library.business.entity.Pedido;
-import es.uclm.library.business.entity.Restaurante;
 import es.uclm.library.business.entity.ServicioEntrega;
 import es.uclm.library.business.entity.Pago;
 import es.uclm.library.persistence.*;
@@ -13,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
 
 @Service
 public class PedidoService {
