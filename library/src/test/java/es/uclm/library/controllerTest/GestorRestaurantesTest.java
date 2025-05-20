@@ -12,12 +12,15 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.support.BindingAwareModelMap;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class GestorRestaurantesTest {
 
     @InjectMocks
@@ -32,98 +35,128 @@ class GestorRestaurantesTest {
     @Mock
     private HttpSession session;
 
+    @Mock
+    private BindingResult bindingResult;
+
+    @Mock
     private Model model;
+
+    private ItemMenu itemMenu;
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
-        model = new BindingAwareModelMap();
+        itemMenu = new ItemMenu();
     }
 
     @Test
-    void testMostrarPaginaRestaurantes() {
-        // Arrange
-        String email = "restaurante@example.com";
-        Long idRestaurante = 1L;
-        when(session.getAttribute("email")).thenReturn(email);
-        when(restauranteService.obtenerIdRestaurantePorUsuario(email)).thenReturn(idRestaurante);
+    void test_CP1_HasErrorsTrue() {
+        when(bindingResult.hasErrors()).thenReturn(true);
 
-        // Act
-        String viewName = gestorRestaurantes.mostrarPaginaRestaurantes(session, model);
+        String view = gestorRestaurantes.guardarMenu(session, itemMenu, bindingResult, null, null, model);
 
-        // Assert
-        assertEquals("RestaurantesPag", viewName);
-        assertEquals(idRestaurante, model.getAttribute("idRestaurante"));
+        assertEquals("DarAltaMenu", view);
+        verify(model).addAttribute(eq("error"), anyString());
+        verifyNoInteractions(restauranteService, itemMenuDAO);
     }
 
     @Test
-    void testMostrarRestaurantePedido() {
-        // Arrange
-        Long restauranteId = 1L;
-        Long cartaId = 2L;
-        List<CartaMenu> cartasMenu = List.of(new CartaMenu());
-        CartaMenu cartaMenu = new CartaMenu();
-        when(restauranteService.obtenerCartasPorRestaurante(restauranteId)).thenReturn(cartasMenu);
-        when(restauranteService.obtenerCartaPorId(cartaId)).thenReturn(cartaMenu);
+    void test_CP2_NoErrors_NuevaCarta_McMenu_CartaId_0() {
+        when(bindingResult.hasErrors()).thenReturn(false);
+        when(session.getAttribute("email")).thenReturn("usuario@email.com");
+        when(restauranteService.obtenerIdRestaurantePorUsuario("usuario@email.com")).thenReturn(1L);
 
-        // Act
-        String viewName = gestorRestaurantes.mostrarRestaurantePedido(restauranteId, cartaId, model);
+        CartaMenu nuevaCarta = new CartaMenu();
+        nuevaCarta.setNombre("McMenu");
+        nuevaCarta.setRestaurante(new Restaurante(1L));
 
-        // Assert
-        assertEquals("RestaurantePedido", viewName);
-        assertEquals(cartasMenu, model.getAttribute("cartasMenu"));
-        assertEquals(restauranteId, model.getAttribute("restauranteId"));
-        assertEquals(cartaMenu.getItems(), model.getAttribute("items"));
+        when(restauranteService.guardarNuevaCarta(any(CartaMenu.class))).thenReturn(nuevaCarta);
+        when(restauranteService.cartaExiste("McMenu", 1L)).thenReturn(false);
+        when(restauranteService.obtenerCartasPorRestaurante(1L)).thenReturn(List.of());
+
+        String view = gestorRestaurantes.guardarMenu(session, itemMenu, bindingResult, "McMenu", 0L, model);
+
+        assertEquals("DarAltaMenu", view);
+        verify(model).addAttribute("success", "Ítem agregado con éxito.");
     }
 
     @Test
-    void testGuardarMenuExitoso() {
-        // Arrange
-        String email = "restaurante@example.com";
-        Long idRestaurante = 1L;
-        ItemMenu itemMenu = new ItemMenu();
-        BindingResult result = mock(BindingResult.class);
-        when(session.getAttribute("email")).thenReturn(email);
-        when(restauranteService.obtenerIdRestaurantePorUsuario(email)).thenReturn(idRestaurante);
-        when(result.hasErrors()).thenReturn(false);
+    void test_CP3_HasErrorsTrue_CartaMenuId50() {
+        when(bindingResult.hasErrors()).thenReturn(true);
 
-        // Act
-        String viewName = gestorRestaurantes.guardarMenu(session, itemMenu, result, null, null, model);
+        String view = gestorRestaurantes.guardarMenu(session, itemMenu, bindingResult, null, 50L, model);
 
-        // Assert
-        assertEquals("DarAltaMenu", viewName);
-        verify(itemMenuDAO, times(1)).save(itemMenu);
+        assertEquals("DarAltaMenu", view);
+        verify(model).addAttribute(eq("error"), anyString());
+        verifyNoInteractions(restauranteService, itemMenuDAO);
     }
 
     @Test
-    void testListarRestaurantes() {
-        // Arrange
-        List<Restaurante> listaRestaurantes = List.of(new Restaurante());
-        when(restauranteService.obtenerTodosRestaurantes()).thenReturn(listaRestaurantes);
+    void test_CP4_NoErrors_NuevaCarta_McMenu_CartaIdNegativo() {
+        when(bindingResult.hasErrors()).thenReturn(false);
+        when(session.getAttribute("email")).thenReturn("usuario@email.com");
+        when(restauranteService.obtenerIdRestaurantePorUsuario("usuario@email.com")).thenReturn(1L);
 
-        // Act
-        String viewName = gestorRestaurantes.listarRestaurantes(model);
+        CartaMenu nuevaCarta = new CartaMenu();
+        nuevaCarta.setNombre("McMenu");
+        nuevaCarta.setRestaurante(new Restaurante(1L));
 
-        // Assert
-        assertEquals("ListaRestaurantes", viewName);
-        assertEquals(listaRestaurantes, model.getAttribute("restaurantes"));
+        when(restauranteService.guardarNuevaCarta(any(CartaMenu.class))).thenReturn(nuevaCarta);
+        when(restauranteService.cartaExiste("McMenu", 1L)).thenReturn(false);
+        when(restauranteService.obtenerCartasPorRestaurante(1L)).thenReturn(List.of());
+
+        String view = gestorRestaurantes.guardarMenu(session, itemMenu, bindingResult, "McMenu", -50L, model);
+
+        assertEquals("DarAltaMenu", view);
+        verify(model).addAttribute("success", "Ítem agregado con éxito.");
     }
 
     @Test
-    void testMostrarCartas() {
-        // Arrange
-        String email = "restaurante@example.com";
-        Long idRestaurante = 1L;
-        List<CartaMenu> cartasMenu = List.of(new CartaMenu());
-        when(session.getAttribute("email")).thenReturn(email);
-        when(restauranteService.obtenerIdRestaurantePorUsuario(email)).thenReturn(idRestaurante);
-        when(restauranteService.obtenerCartasPorRestaurante(idRestaurante)).thenReturn(cartasMenu);
+    void test_CP5_ErroresValidacionYParametrosNulos() {
+        when(bindingResult.hasErrors()).thenReturn(true);
+        when(session.getAttribute("email")).thenReturn(null);
 
-        // Act
-        String viewName = gestorRestaurantes.mostrarCartas(session, model);
+        String view = gestorRestaurantes.guardarEdicionItem(session, itemMenu, bindingResult, null, model);
 
-        // Assert
-        assertEquals("verCartas", viewName);
-        assertEquals(cartasMenu, model.getAttribute("cartasMenu"));
+        assertEquals("editarItem", view);
+        verify(model).addAttribute("error", "Error en la edición del ítem.");
+        verify(model).addAttribute(eq("item"), eq(itemMenu));
+        verify(restauranteService).obtenerCartasPorRestaurante(any()); // el método debe ser llamado con un ID nulo
+    }
+
+    @Test
+    void test_CP6_SinErrores_CartaNoEncontrada_porIdNegativo() {
+        when(bindingResult.hasErrors()).thenReturn(false);
+        when(session.getAttribute("email")).thenReturn("admin");
+        when(restauranteService.obtenerIdRestaurantePorUsuario("admin")).thenReturn(1L);
+        when(restauranteService.obtenerCartaPorId(-50L)).thenReturn(null);
+
+        String view = gestorRestaurantes.guardarEdicionItem(session, itemMenu, bindingResult, -50L, model);
+
+        assertEquals("editarItem", view);
+        verify(model).addAttribute("error", "Carta no encontrada.");
+        verify(model).addAttribute(eq("item"), eq(itemMenu));
+        verify(restauranteService).obtenerCartasPorRestaurante(1L);
+    }
+
+    @Test
+    void test_CP7_SinErrores_CartaRecuperadaCorrectamente() {
+        when(bindingResult.hasErrors()).thenReturn(false);
+        when(session.getAttribute("email")).thenReturn("admin");
+        when(restauranteService.obtenerIdRestaurantePorUsuario("admin")).thenReturn(1L);
+
+        Restaurante restaurante = new Restaurante(1L);
+        CartaMenu carta = new CartaMenu();
+        carta.setId(50L);
+        carta.setRestaurante(restaurante);
+        carta.setItems(new java.util.ArrayList<>());
+
+        when(restauranteService.obtenerCartaPorId(50L)).thenReturn(carta);
+
+        String view = gestorRestaurantes.guardarEdicionItem(session, itemMenu, bindingResult, 50L, model);
+
+        assertEquals("RestaurantesPag", view);
+        verify(itemMenuDAO).save(itemMenu);
+        verify(restauranteService).actualizarCarta(carta);
+        verify(model).addAttribute("success", "Ítem editado correctamente.");
     }
 }

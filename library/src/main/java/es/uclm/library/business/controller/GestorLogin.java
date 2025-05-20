@@ -29,7 +29,7 @@ public class GestorLogin {
 		//return "login"; // Apunta al formulario de login de interfaces
 		Usuario usuario = new Usuario();
         	model.addAttribute("usuario", usuario);
-        	return "login"; // nombre de la plantilla
+        	return "login";
 	}
 
 	// Metodo para procesar el formulario login
