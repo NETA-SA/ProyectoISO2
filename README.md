@@ -1,3 +1,3 @@
-# VERSION 1.0
+# VERSION 1.1
 
-**Realizada y terminada en el final del sprint 2.**
+**Realizada y terminada en el final del sprint 4.**
